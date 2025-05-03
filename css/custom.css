@@ -270,12 +270,6 @@
   transform-origin: center center;
 }
 
-/* Logo in hero section */
-.logo-hero {
-  max-width: 150px;
-  vertical-align: middle;
-}
-
 /* Mobile styles for hero section */
 @media (max-width: 767px) {
   /* Reduce spacing in hero section for mobile */
