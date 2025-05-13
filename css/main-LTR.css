@@ -3057,14 +3057,14 @@ body.rounded-btns .read-more {
   min-width: 100%;
   -o-object-fit: cover;
      object-fit: cover;
-  height: 450px;
+  height: 250px;
   transition: scale 0.5s ease-in-out 0s;
 }
 .portfolio .item .portfolio-bg-img {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 450px;
+  height: 250px;
 }
 .portfolio .item .item-info {
   position: absolute;
@@ -3169,7 +3169,7 @@ body.rounded-btns .read-more {
   margin-bottom: 3rem;
 }
 .portfolio-single .project-featured-img {
-  max-height: 450px;
+  max-height: 250px;
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -3278,7 +3278,7 @@ body.rounded-btns .read-more {
   font-size: 0.85rem;
 }
 .portfolio-single .main-area .project-video {
-  min-height: 450px;
+  min-height: 250px;
   position: relative;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -4600,7 +4600,7 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
 .blog .post-featured-area .swiper-container {
   width: 100%;
   height: auto;
-  max-height: 450px;
+  max-height: 250px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -4653,7 +4653,7 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
 }
 .blog .post-featured-area .video-source {
   width: 100%;
-  height: 450px;
+  height: 250px;
 }
 .blog .social {
   margin-bottom: 1rem;
