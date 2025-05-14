@@ -371,7 +371,7 @@
           </div>
         </div>
         <!-- CTA Button at the bottom of the portfolio section -->
-        <div class="text-end mt-4">
+        <div class="text-start mt-4">
           <div class="cta-area wow fadeInUp" data-wow-delay=".8s">
             <a class="cta-btn btn-solid" href="#contact-us">Contact Us<i class="bi bi-arrow-right icon"></i></a>
           </div>
@@ -569,29 +569,29 @@
                 <div class="contact-form-inputs wow fadeInUp" data-wow-delay=".6s">
                   <div class="custom-form-area input-boxed">
                     <!--Form To have user messages-->
-                    <form class="main-form" id="contact-us-form" action="" method="post"><span class="done-msg"></span>
+                    <form class="main-form" id="contact-us-form" action="script/email/aaa-contact-form-handler.php" method="post"><span class="done-msg"></span>
                       <div class="row ">
                         <div class="col-12 col-lg-6">
                           <div class="   input-wrapper">
-                            <input class="text-input" id="user-name" name="UserName" type="text"/>
+                            <input class="text-input" id="user-name" name="user-name" type="text" required minlength="2" maxlength="50" pattern="[A-Za-z\s\-\']+"/>
                             <label class="input-label" for="user-name"> Name <span class="req">*</span></label><span class="b-border"></span><span class="error-msg"></span>
                           </div>
                         </div>
                         <div class="col-12 col-lg-6">
                           <div class="   input-wrapper">
-                            <input class="text-input" id="user-email" name="UserEmail" type="email"/>
+                            <input class="text-input" id="user-email" name="user-email" type="email" required/>
                             <label class="input-label" for="user-email"> E-mail <span class="req">*</span></label><span class="b-border"></span><span class="error-msg"></span>
                           </div>
                         </div>
                         <div class="col-12 ">
                           <div class="   input-wrapper">
-                            <input class="text-input" id="msg-subject" name="subject" type="text"/>
+                            <input class="text-input" id="msg-subject" name="msg-subject" type="text" required minlength="2" maxlength="100"/>
                             <label class="input-label" for="msg-subject"> Company <span class="req">*</span></label><span class="b-border"></span><span class="error-msg"></span>
                           </div>
                         </div>
                         <div class="col-12 ">
                           <div class="   input-wrapper">
-                            <textarea class=" text-input" id="msg-text" name="message"></textarea>
+                            <textarea class=" text-input" id="msg-text" name="msg-text" required minlength="10" maxlength="1000"></textarea>
                             <label class="input-label" for="msg-text"> your message <span class="req">*</span></label><span class="b-border"></span><i></i><span class="error-msg"></span>
                           </div>
                         </div>
@@ -706,6 +706,9 @@
 
         <!--     wave effect     -->
         <script src="js/wave.js"></script>
+        
+        <!--     contact form validation     -->
+        <script src="script/email/contact-form-validation.js"></script>
 
         <!-- Initialize Wave Effect -->
         <script>

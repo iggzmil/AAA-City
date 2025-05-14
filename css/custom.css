@@ -211,6 +211,15 @@
   z-index: 0; /* Ensure it's behind content but visible */
 }
 
+/* Responsive adjustments for waves in why choose us section */
+@media (max-width: 991px) {
+  .why-choose-us-wave-container .waves {
+    height: 30%; /* Reduced to make it appear higher */
+    top: 0; /* Positioned at the very top */
+    bottom: auto;
+  }
+}
+
 /* Background lines removed */
 
 /* Remove cursor change on hover for blog section post boxes */
@@ -271,21 +280,33 @@
 }
 
 /* Mobile styles for hero section */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Reduce spacing in hero section for tablet */
+  .page-hero {
+    padding: 50px 0 80px; /* Add reduced padding for tablets */
+  }
+  
+  /* Reduce spacing above text area */
+  .hero-text-area {
+    margin-top: 1.5rem; /* Reduced from 2.5rem in main CSS */
+  }
+}
+
 @media (max-width: 767px) {
   /* Reduce spacing in hero section for mobile */
   .page-hero {
-    padding: 60px 0 80px; /* Reduced padding from 100px */
+    padding: 30px 0 80px; /* Reduced top padding from 60px to 30px */
     min-height: auto; /* Allow the section to be smaller on mobile */
   }
 
   /* Reduce spacing above social media icons */
   .hero-text-area {
-    margin-top: 1rem; /* Reduced from 2.5rem */
+    margin-top: 0.5rem; /* Reduced from 1rem */
   }
 
   /* Adjust spacing for social icons */
   .hero-social-icons.mb-3 {
-    margin-bottom: 0.75rem !important; /* Reduced spacing */
+    margin-bottom: 0.5rem !important; /* Reduced spacing */
   }
 
   /* Make pre-title more compact */
@@ -301,4 +322,27 @@
   .copyrights .creadits {
     padding-bottom: 15px; /* Reduced from 50px */
   }
+}
+
+/* Add styles for form validation */
+.error-msg {
+    color: #d9534f;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.text-input.is-invalid {
+    border-color: #d9534f !important;
+    box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.25);
+}
+
+.done-msg.show {
+    display: block;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 0.25rem;
 }
