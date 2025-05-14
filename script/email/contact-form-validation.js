@@ -150,12 +150,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Form submission with enhanced validation
         contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default form submission
+            
             // First validate all fields
             const isValid = validateForm();
             
             if (!isValid) {
-                e.preventDefault(); // Prevent form submission if validation fails
-                
                 // Focus the first input with an error
                 const firstInvalidInput = document.querySelector('.is-invalid');
                 if (firstInvalidInput) {
@@ -164,8 +164,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
-            // If using AJAX submission instead of regular form submission,
-            // you can add your AJAX code here and e.preventDefault()
+            // Show loading state
+            submitBtn.disabled = true;
+            const originalButtonText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Sending...';
+            
+            // Use AJAX to submit the form
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalButtonText;
+                
+                // Handle the response
+                handleFormSubmissionResponse(data);
+            })
+            .catch(error => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalButtonText;
+                
+                // Show error message
+                alert('The server encountered an error processing your request. Please try again later or contact us directly.');
+                console.error('Form submission error:', error);
+            });
         });
         
         // Handle successful form submission response

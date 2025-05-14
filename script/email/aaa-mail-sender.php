@@ -244,7 +244,7 @@ function checkSMTPResponse($socket, $expectedCode, $throwException = true) {
 function createContactEmailHtml($data) {
     $name = htmlspecialchars($data['user-name'] ?? '');
     $email = htmlspecialchars($data['user-email'] ?? '');
-    $subject = htmlspecialchars($data['msg-subject'] ?? '');
+    $company = htmlspecialchars($data['msg-subject'] ?? '');
     $message = nl2br(htmlspecialchars($data['msg-text'] ?? ''));
 
     // Create HTML email
@@ -297,7 +297,7 @@ function createContactEmailHtml($data) {
         <div class="contact-details">
             <p><strong>Name:</strong> {$name}</p>
             <p><strong>Email:</strong> {$email}</p>
-            <p><strong>Company:</strong> {$subject}</p>
+            <p><strong>Company:</strong> {$company}</p>
         </div>
 
         <div class="message-content">
