@@ -74,14 +74,27 @@
             
             fetch('aaa-contact-form-handler.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                    // Don't set Content-Type when using FormData - it will be set automatically with boundary
+                }
             })
             .then(response => {
                 resultDiv.innerHTML = `<h3>Response Status: ${response.status} ${response.statusText}</h3>`;
                 return response.text();
             })
             .then(data => {
-                resultDiv.innerHTML += `<h4>Response Data:</h4><pre>${data}</pre>`;
+                try {
+                    // Try to parse as JSON
+                    const jsonData = JSON.parse(data);
+                    resultDiv.innerHTML += `<h4>Response Data (JSON):</h4>
+                        <pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+                } catch (e) {
+                    // If not JSON, display as text
+                    resultDiv.innerHTML += `<h4>Response Data (Text):</h4><pre>${data}</pre>`;
+                }
             })
             .catch(error => {
                 resultDiv.innerHTML += `<h4>Error:</h4><pre>${error}</pre>`;

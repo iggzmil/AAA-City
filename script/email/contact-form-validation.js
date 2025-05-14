@@ -169,20 +169,50 @@ document.addEventListener('DOMContentLoaded', function() {
             const originalButtonText = submitBtn.innerHTML;
             submitBtn.innerHTML = 'Sending...';
             
+            // Create FormData
+            const formData = new FormData(contactForm);
+            
+            // Log the form data being sent (for debugging)
+            console.log('Sending form data to:', contactForm.action);
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            
             // Use AJAX to submit the form
             fetch(contactForm.action, {
                 method: 'POST',
-                body: new FormData(contactForm),
+                body: formData,
                 headers: {
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                    // Don't set Content-Type when using FormData - it will be set automatically with boundary
                 }
             })
             .then(response => {
+                console.log('Server response status:', response.status);
+                
                 if (!response.ok) {
-                    console.log('Server response status:', response.status);
+                    if (response.status === 405) {
+                        throw new Error('Method Not Allowed (405): The server does not allow POST requests to this endpoint. Please check server configuration.');
+                    }
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-                return response.json();
+                
+                // First try to get response as text
+                return response.text().then(text => {
+                    try {
+                        // Try to parse as JSON
+                        return JSON.parse(text);
+                    } catch (e) {
+                        // If not valid JSON, return the text
+                        console.error('Server returned non-JSON response:', text);
+                        return {
+                            success: false,
+                            message: 'Server returned an invalid response format',
+                            raw: text
+                        };
+                    }
+                });
             })
             .then(data => {
                 // Reset button state
@@ -198,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.innerHTML = originalButtonText;
                 
                 // Show error message
-                alert('The server encountered an error processing your request. Please try again later or contact us directly.');
+                alert('Error: ' + error.message);
                 console.error('Form submission error:', error);
             });
         });

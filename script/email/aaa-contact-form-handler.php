@@ -17,10 +17,11 @@ error_reporting(E_ALL);
 // Set content type for responses
 header('Content-Type: application/json');
 
-// Allow any origin for development (CORS)
+// Allow CORS - use specific domain in production
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
+header("Access-Control-Max-Age: 86400"); // 24 hours
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -111,7 +112,15 @@ $debugInfo = [
     'method' => $_SERVER['REQUEST_METHOD'],
     'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
     'has_post' => !empty($_POST),
-    'has_raw_input' => !empty(file_get_contents('php://input'))
+    'has_raw_input' => !empty(file_get_contents('php://input')),
+    'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
+    'php_version' => PHP_VERSION,
+    'server_vars' => [
+        'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+        'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'unknown',
+        'query_string' => $_SERVER['QUERY_STRING'] ?? 'none',
+        'http_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+    ]
 ];
 
 // Handle GET request (for testing only)
@@ -154,6 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => false,
             'message' => 'No form data received',
+            'raw_post' => $_POST,
+            'php_input' => file_get_contents('php://input'),
             'debug' => $debugInfo
         ]);
         exit;
@@ -196,12 +207,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Set the subject format
     $emailSubject = 'AAA.City Contact Form Submission';
 
+    // Set the reply-to as the user's email
+    $replyTo = $sanitizedData['user-email'];
+
     // Send the email
     $emailResult = sendAAAEmail(
         $recipientEmail,
         $emailSubject,
         $emailHtml,
-        'AAA City Website'
+        'AAA City Website',
+        $replyTo
     );
 
     if ($emailResult['success']) {
@@ -219,8 +234,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => false,
             'message' => 'Sorry, we encountered a problem sending your message. Please try again later or contact us directly.',
-            'debug' => $emailResult['message'], // Include this in development, remove in production
-            'request_info' => $debugInfo
+            'error_details' => $emailResult['message'],
+            'debug' => $debugInfo
         ]);
     }
 } else {

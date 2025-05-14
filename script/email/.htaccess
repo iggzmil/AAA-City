@@ -1,0 +1,30 @@
+# Allow execution of PHP scripts
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+# Enable PHP processing
+Options +ExecCGI
+AddHandler php-script .php
+
+# Allow HTTP methods
+<LimitExcept GET POST OPTIONS>
+    Order deny,allow
+    Deny from all
+</LimitExcept>
+
+# Allow POST requests to specific PHP files
+<Files "aaa-contact-form-handler.php">
+    <LimitExcept GET POST OPTIONS>
+        Order deny,allow
+        Deny from all
+    </LimitExcept>
+</Files>
+
+# Enable CORS
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, X-Requested-With"
+    Header set Access-Control-Max-Age "86400"
+</IfModule> 
