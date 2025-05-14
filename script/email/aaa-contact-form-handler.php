@@ -9,8 +9,24 @@
 // Include the AAA mail sender
 require_once __DIR__ . '/aaa-mail-sender.php';
 
-// Set content type for AJAX responses
+// Enable error reporting for debugging (comment this out in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Set content type for responses
 header('Content-Type: application/json');
+
+// Allow any origin for development (CORS)
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Function to validate form data
 function validateContactForm($data) {
@@ -87,25 +103,65 @@ function validateContactForm($data) {
     return $errors;
 }
 
-// Process the form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Rate limiting - prevent spam submissions
-    session_start();
-    $currentTime = time();
-    $lastSubmissionTime = isset($_SESSION['last_form_submission']) ? $_SESSION['last_form_submission'] : 0;
+// Get the request data based on content type
+$requestData = [];
 
-    // Allow only one submission every 60 seconds
-    if (($currentTime - $lastSubmissionTime) < 60) {
+// Log information about the request for debugging
+$debugInfo = [
+    'method' => $_SERVER['REQUEST_METHOD'],
+    'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
+    'has_post' => !empty($_POST),
+    'has_raw_input' => !empty(file_get_contents('php://input'))
+];
+
+// Handle GET request (for testing only)
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    echo json_encode([
+        'success' => false,
+        'message' => 'This endpoint accepts POST requests only',
+        'debug' => $debugInfo
+    ]);
+    exit;
+}
+
+// Process both normal form POST and AJAX JSON POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if this is a JSON request
+    if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+        $jsonData = json_decode(file_get_contents('php://input'), true);
+        if ($jsonData) {
+            $requestData = $jsonData;
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid JSON data',
+                'debug' => $debugInfo
+            ]);
+            exit;
+        }
+    } else {
+        // Regular form POST data
+        $requestData = $_POST;
+    }
+
+    // If FormData via fetch API
+    if (empty($requestData) && !empty($_POST)) {
+        $requestData = $_POST;
+    }
+
+    // Check if we actually have any data
+    if (empty($requestData)) {
         echo json_encode([
             'success' => false,
-            'message' => 'Please wait a moment before submitting another message.'
+            'message' => 'No form data received',
+            'debug' => $debugInfo
         ]);
         exit;
     }
 
     // Sanitize input data
     $sanitizedData = [];
-    foreach ($_POST as $key => $value) {
+    foreach ($requestData as $key => $value) {
         // Sanitize string values
         if (is_string($value)) {
             $sanitizedData[$key] = trim(strip_tags($value));
@@ -125,7 +181,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => false,
             'message' => $errorMessage,
-            'errors' => $errors
+            'errors' => $errors,
+            'debug' => $debugInfo
         ]);
         exit;
     }
@@ -148,13 +205,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($emailResult['success']) {
-        // Update last submission time
-        $_SESSION['last_form_submission'] = $currentTime;
-
         // Return success
         echo json_encode([
             'success' => true,
-            'message' => 'Thank you for your message. We will get back to you shortly.'
+            'message' => 'Thank you for your message. We will get back to you shortly.',
+            'debug' => $debugInfo
         ]);
     } else {
         // Log the error
@@ -164,13 +219,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => false,
             'message' => 'Sorry, we encountered a problem sending your message. Please try again later or contact us directly.',
-            'debug' => $emailResult['message'] // Include this in development, remove in production
+            'debug' => $emailResult['message'], // Include this in development, remove in production
+            'request_info' => $debugInfo
         ]);
     }
 } else {
-    // Not a POST request
+    // Not a supported request method
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid request method. This endpoint only accepts POST requests.'
+        'message' => 'Invalid request method. This endpoint only accepts POST requests.',
+        'debug' => $debugInfo
     ]);
 } 

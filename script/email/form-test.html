@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 8px; }
+        button { padding: 10px 15px; background: #0576ee; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; background: #f5f5f5; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Form Test</h1>
+    <p>This page tests different methods for sending the contact form data.</p>
+
+    <h2>Method 1: Standard Form POST</h2>
+    <form action="aaa-contact-form-handler.php" method="post" id="standardForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="user-name" value="Test User" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="user-email" value="test@example.com" required>
+        </div>
+        <div class="form-group">
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="msg-subject" value="Test Company" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="msg-text" rows="4" required>This is a test message.</textarea>
+        </div>
+        <button type="submit">Submit Form (Standard POST)</button>
+    </form>
+
+    <h2>Method 2: Fetch API</h2>
+    <form id="fetchForm">
+        <div class="form-group">
+            <label for="name2">Name:</label>
+            <input type="text" id="name2" name="user-name" value="Test User" required>
+        </div>
+        <div class="form-group">
+            <label for="email2">Email:</label>
+            <input type="email" id="email2" name="user-email" value="test@example.com" required>
+        </div>
+        <div class="form-group">
+            <label for="company2">Company:</label>
+            <input type="text" id="company2" name="msg-subject" value="Test Company" required>
+        </div>
+        <div class="form-group">
+            <label for="message2">Message:</label>
+            <textarea id="message2" name="msg-text" rows="4" required>This is a test message.</textarea>
+        </div>
+        <button type="button" id="fetchSubmit">Submit Form (Fetch API)</button>
+    </form>
+
+    <div class="result" id="result">
+        <h3>Results will appear here</h3>
+        <p>Submit a form to see results</p>
+    </div>
+
+    <script>
+        document.getElementById('fetchSubmit').addEventListener('click', function() {
+            const form = document.getElementById('fetchForm');
+            const formData = new FormData(form);
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<h3>Sending request...</h3>';
+            
+            fetch('aaa-contact-form-handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                resultDiv.innerHTML = `<h3>Response Status: ${response.status} ${response.statusText}</h3>`;
+                return response.text();
+            })
+            .then(data => {
+                resultDiv.innerHTML += `<h4>Response Data:</h4><pre>${data}</pre>`;
+            })
+            .catch(error => {
+                resultDiv.innerHTML += `<h4>Error:</h4><pre>${error}</pre>`;
+            });
+        });
+    </script>
+</body>
+</html> 

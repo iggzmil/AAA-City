@@ -172,10 +172,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Use AJAX to submit the form
             fetch(contactForm.action, {
                 method: 'POST',
-                body: new FormData(contactForm)
+                body: new FormData(contactForm),
+                headers: {
+                    'Accept': 'application/json'
+                }
             })
             .then(response => {
                 if (!response.ok) {
+                    console.log('Server response status:', response.status);
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
                 return response.json();
