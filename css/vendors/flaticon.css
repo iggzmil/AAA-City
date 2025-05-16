@@ -1,0 +1,98 @@
+/*!
+*    ______ _       _   _
+*    |  ____| |     | | (_)
+*    | |__  | | __ _| |_ _  ___ ___  _ __
+*    |  __| | |/ _` | __| |/ __/ _ \| '_ \
+*    | |    | | (_| | |_| | (_| (_) | | | |
+*    |_|    |_|\__,_|\__|_|\___\___/|_| |_|
+*
+*         https://www.flaticon.com
+*/
+
+@font-face {
+    font-family: "flaticon_aaa_city_website";
+    src: url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.woff2?4b27a6ded5557fb3ab899f842c2c3d65") format("woff2"),
+url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.woff?4b27a6ded5557fb3ab899f842c2c3d65") format("woff"),
+url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.eot?4b27a6ded5557fb3ab899f842c2c3d65#iefix") format("embedded-opentype"),
+url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.ttf?4b27a6ded5557fb3ab899f842c2c3d65") format("truetype"),
+url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.svg?4b27a6ded5557fb3ab899f842c2c3d65#flaticon_aaa_city_website") format("svg")
+}
+
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+    font-family: flaticon_aaa_city_website !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.flaticon-manufacturing:before {
+    content: "\f101";
+}
+.flaticon-chat-bot:before {
+    content: "\f102";
+}
+.flaticon-chat-bot-1:before {
+    content: "\f103";
+}
+.flaticon-robot-chat:before {
+    content: "\f104";
+}
+.flaticon-software-application:before {
+    content: "\f105";
+}
+.flaticon-onboarding:before {
+    content: "\f106";
+}
+.flaticon-process:before {
+    content: "\f107";
+}
+.flaticon-process-1:before {
+    content: "\f108";
+}
+.flaticon-process-2:before {
+    content: "\f109";
+}
+.flaticon-data-processing:before {
+    content: "\f10a";
+}
+.flaticon-wrangler:before {
+    content: "\f10b";
+}
+.flaticon-process-diagram:before {
+    content: "\f10c";
+}
+.flaticon-data-driven:before {
+    content: "\f10d";
+}
+.flaticon-machine-learning:before {
+    content: "\f10e";
+}
+.flaticon-coding:before {
+    content: "\f10f";
+}
+.flaticon-goal:before {
+    content: "\f110";
+}
+.flaticon-about:before {
+    content: "\f111";
+}
+.flaticon-optimization:before {
+    content: "\f112";
+}
+.flaticon-vpn:before {
+    content: "\f113";
+}
+.flaticon-confidence:before {
+    content: "\f114";
+}
+.flaticon-chatbot:before {
+    content: "\f115";
+}
+.flaticon-chatbot-1:before {
+    content: "\f116";
+}
+

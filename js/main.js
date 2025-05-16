@@ -37,7 +37,23 @@ $(function () {
     }
   }
 
+  // Ensure buttons are positioned correctly and properly attached to the DOM
+  function initBackToTopButtons() {
+    // Move buttons to body to avoid any stacking context issues
+    const backToTopBtn = document.getElementById('back-to-top');
+    const backToTopRightBtn = document.getElementById('back-to-top-right');
+    
+    if (backToTopBtn && backToTopBtn.parentElement !== document.body) {
+      document.body.appendChild(backToTopBtn);
+    }
+    
+    if (backToTopRightBtn && backToTopRightBtn.parentElement !== document.body) {
+      document.body.appendChild(backToTopRightBtn);
+    }
+  }
 
+  // Initialize buttons on page load
+  initBackToTopButtons();
 
   /* ********* Dark theme is now the only theme ***********/
 
@@ -70,11 +86,60 @@ $(function () {
     });
   }
 
-  // Start Smooth Scrolling To Window Top When Clicking on Back To Top Button
-  $(toTopBtn).on("click", function () {
-    root.css("scroll-behavior", "smooth").scrollTop(0);
+  // Smooth Scrolling When Clicking on Links Start
+  $('a[data-scroll]').on("click", function (e) {
+    //set the target to the element that has the ID set to by "data-scroll"
+    const target = $("#" + $(this).data("scroll"));
+
+    // If it's a valid target, scroll to it
+    if (target.length) {
+      e.preventDefault();
+
+      root.animate({
+        scrollTop: target.offset().top - 90,
+      },
+        800
+      );
+    }
   });
-  // End Smooth Scrolling To Window Top When Clicking on Back To Top Button
+
+  // Smooth Scrolling When Clicking on Back To Top Button
+  toTopBtn.on("click", function () {
+    if (root.length) {
+      root.animate({
+        scrollTop: 0,
+      },
+        800
+      );
+    }
+    return false;
+  });
+
+  // Simple scroll handler with no special tricks
+  main_window.on("scroll", function () {
+    const scrollPosition = $(this).scrollTop();
+    
+    // Just show/hide the back to top button based on scroll position
+    if (scrollPosition > 300) {
+      toTopBtn.addClass("show");
+    } else {
+      toTopBtn.removeClass("show");
+    }
+
+    // fire the counter
+    fireCounter();
+  });
+
+  // Force initial check of scroll position on page load
+  if (main_window.scrollTop() > 300) {
+    toTopBtn.addClass("show");
+  }
+
+  // Reposition buttons on resize
+  main_window.on("resize", initBackToTopButtons);
+
+  // Ensure buttons stay properly positioned
+  setInterval(initBackToTopButtons, 2000);
 
   /* Start Portfolio btns  */
   if ($(".portfolio .portfolio-btn").length) {
@@ -137,18 +202,33 @@ $(function () {
     }
   }, 10);
 
-  main_window.on("scroll", function () {
-    if ($(this).scrollTop() > 50) {
-      //show back to top btn
-      toTopBtn.addClass("show");
-    } else {
-      //hide back to top btn
-      toTopBtn.removeClass("show");
+  /* *******  loadding simpleParallax.js library ********/
+  if (!(typeof window.simpleParallax === "undefined")) {
+    // Select all parallax images
+    let parallaxBlock = document.querySelectorAll(".parallax-img");
+    if (parallaxBlock.length) {
+      // Apply parallax to all images with more conservative settings
+      new simpleParallax(parallaxBlock, {
+        delay: 0.6,
+        scale: 1.1,  // Much smaller scale to prevent layout issues
+        overflow: true,
+        transition: 'cubic-bezier(0,0,0,1)'
+      });
     }
+  }
 
-    // to make sure the counter will start counting while its section apear on the screen
-    fireCounter();
-  });
+  // Function to check if an element is in viewport
+  function isInViewport(element) {
+    if (element.length === 0) return false;
+    
+    const rect = element[0].getBoundingClientRect();
+    return (
+      rect.top <= window.innerHeight &&
+      rect.bottom >= 0
+    );
+  }
+  
+  // End Smooth Scrolling To Window Top When Clicking on Back To Top Button
 
   /*************Start Contact Form Functionality************/
 
@@ -242,10 +322,11 @@ $(function () {
           init: function () {
             let thisSlider = this;
             $(".slides-count").html("0" + (this.slides.length - 2));
-            $(".curent-slide").html("0" + (this.realIndex + 1));
+
+            $(".slide-num").html("0" + (this.realIndex + 1));
           },
           slideChange: function () {
-            $(".curent-slide").html("0" + (this.realIndex + 1));
+            $(".slide-num").html("0" + (this.realIndex + 1));
           },
         },
         autoplay: {
@@ -264,152 +345,122 @@ $(function () {
       }
     );
   }
-  if ($(".hero-swiper-slider.slide-effect .swiper-container").length) {
-    const heroSlider = new Swiper(
-      ".hero-swiper-slider.slide-effect .swiper-container",
+
+  /*--- landing page Hero slider ---*/
+  if ($(".hero-swiper-slider.Landing-page-slider .swiper-container").length) {
+    const hero_swiper_slider = new Swiper(
+      ".hero-swiper-slider.Landing-page-slider .swiper-container",
       {
-        speed: 1000,
+        // Optional parameters
+        direction: "horizontal",
         loop: true,
-        reverseDirection: true,
-        effect: "slide",
+        touchEventsTarget: "container",
+        effect: "fade",
         fadeEffect: {
           crossFade: true,
         },
+        speed: 1000,
+        parallax: true,
+        watchSlidesProgress: true,
         on: {
           init: function () {
             let thisSlider = this;
             $(".slides-count").html("0" + (this.slides.length - 2));
-            $(".curent-slide").html("0" + (this.realIndex + 1));
+
+            $(".slide-num").html("0" + (this.realIndex + 1));
           },
           slideChange: function () {
-            $(".curent-slide").html("0" + (this.realIndex + 1));
+            $(".slide-num").html("0" + (this.realIndex + 1));
           },
         },
         autoplay: {
           delay: 5000,
           disableOnInteraction: true,
         },
+
+        // If we need pagination
         pagination: {
-          el: ".hero-swiper-slider.slide-effect .swiper-pagination",
-          type: "bullets",
+          el: ".hero-swiper-slider.Landing-page-slider .swiper-pagination",
           clickable: true,
+          type: "bullets",
         },
+
+        // Navigation arrows
         navigation: {
-          nextEl: ".hero-swiper-slider.slide-effect .swiper-button-next",
-          prevEl: ".hero-swiper-slider.slide-effect .swiper-button-prev",
+          nextEl: ".hero-swiper-slider.Landing-page-slider .swiper-button-next",
+          prevEl: ".hero-swiper-slider.Landing-page-slider .swiper-button-prev",
         },
       }
     );
   }
 
-  // initialize swiper [Testimonials with 1 Column]
-  if ($(".testimonials-1-col  .swiper-container").length) {
-    const testimonialsSlider_1 = new Swiper(
-      ".testimonials-1-col  .swiper-container",
-      {
-        // Optional parameters
-        speed: 500,
-        loop: true,
-        grabCursor: true,
-        slidesPerView: 1,
-        spaceBetween: 50,
-        delay: 5000,
-        autoplay: {
-          delay: 5000,
-        },
-        navigation: {
-          nextEl: ".testimonials-1-col .swiper-button-next",
-          prevEl: ".testimonials-1-col .swiper-button-prev",
-        },
-        on: {
-          resize: function () {
-            this.update();
-          },
-        },
-      }
-    );
-  }
-
-  //initialize swiper [clients Section]
-  if ($(".our-clients .swiper-container").length) {
-    const partenersSlider = new Swiper(".our-clients .swiper-container", {
+  /*---- portfolio Slider ----*/
+  if ($(".portfolio-slider  .swiper-container").length) {
+    const portfolio_slider = new Swiper(".portfolio-slider .swiper-container", {
       // Optional parameters
-      speed: 600,
+      direction: "horizontal",
       loop: true,
-      spaceBetween: 20,
-      grabCursor: true,
-      delay: 5000,
-      autoplay: {
-        delay: 5000,
-      },
+      touchEventsTarget: "container",
       slidesPerView: 3,
+      spaceBetween: 30,
+      mousewheel: true,
+      centeredSlides: true,
+      speed: 1000,
+      autoplay: false,
+
       breakpoints: {
-        991: {
-          slidesPerView: 6,
-          spaceBetween: 30,
+        0: {
+          slidesPerView: 1,
         },
+        767: {
+          slidesPerView: 1,
+        },
+        991: {
+          slidesPerView: 2,
+        },
+        1199: {
+          slidesPerView: 3,
+        },
+      },
+
+      // Navigation arrows
+      navigation: {
+        nextEl: ".portfolio-slider .swiper-button-next",
+        prevEl: ".portfolio-slider .swiper-button-prev",
       },
     });
   }
 
-  //initialize swiper [portfolio-slider]
-  if ($(".portfolio-slider .swiper-container").length) {
-    const swiperPortfolioSlider = new Swiper(
-      ".portfolio-slider .swiper-container",
+  /*---- testimonials Slider ----*/
+  if ($(".testimonials-slider  .swiper-container").length) {
+    const testimonials_slider = new Swiper(
+      ".testimonials-slider .swiper-container",
       {
-        speed: 600,
+        // Optional parameters
+        direction: "horizontal",
         loop: true,
-        centeredSlides: true,
+        touchEventsTarget: "container",
         slidesPerView: 1,
         spaceBetween: 30,
+        parallax: true,
+        speed: 800,
         autoplay: {
           delay: 5000,
         },
-        breakpoints: {
-          991: {
-            slidesPerView: 2,
-            spaceBetween: 30,
-          },
-        },
+
+        // Navigation arrows
         navigation: {
-          nextEl: ".portfolio-slider .swiper-button-next",
-          prevEl: ".portfolio-slider .swiper-button-prev",
+          nextEl: ".testimonials-slider .swiper-button-next",
+          prevEl: ".testimonials-slider .swiper-button-prev",
+        },
+        pagination: {
+          el: ".testimonials-slider .swiper-pagination",
+          clickable: true,
+          type: "bullets",
         },
       }
     );
   }
-
-  //initialize swiper [portfolio-single]
-  if (
-    $(".portfolio-single .portfolio-single-slider .swiper-container").length
-  ) {
-    const swiperPortfolioSingleSlider = new Swiper(
-      ".portfolio-single .portfolio-single-slider .swiper-container",
-      {
-        spaceBetween: 10,
-        grabCursor: true,
-        reverseDirection: true,
-        loop: true,
-        slidesPerView: 1,
-        autoplay: {
-          delay: 5000,
-          disableOnInteraction: true,
-        },
-
-        navigation: {
-          nextEl: ".portfolio-single-slider .swiper-button-next",
-          prevEl: ".portfolio-single-slider .swiper-button-prev",
-        },
-      }
-    );
-  }
-
-  /* *******  loading  wow.js  Options ********/
-  const wow = new WOW({
-    animateClass: "animated",
-    offset: 100,
-  });
-  wow.init();
 
   /* *******  loading fancybox.js library ********/
   if ($("*").fancybox) {
@@ -598,10 +649,15 @@ $(function () {
 
   /* *******  loading simpleParallax.js library ********/
   if (!(typeof window.simpleParallax === "undefined")) {
-    let parallaxblock = document.querySelectorAll(".parallax-img ");
-    if (parallaxblock.length) {
-      new simpleParallax(parallaxblock, {
-        delay: 1,
+    // Select all parallax images
+    let parallaxBlock = document.querySelectorAll(".parallax-img");
+    if (parallaxBlock.length) {
+      // Apply parallax to all images with more conservative settings
+      new simpleParallax(parallaxBlock, {
+        delay: 0.6,
+        scale: 1.1,  // Much smaller scale to prevent layout issues
+        overflow: true,
+        transition: 'cubic-bezier(0,0,0,1)'
       });
     }
   }

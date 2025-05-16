@@ -1,0 +1,113 @@
+$flaticon_aaa_city_website-font: "flaticon_aaa_city_website";
+
+@font-face {
+    font-family: $flaticon_aaa_city_website-font;
+    src: url("./flaticon_aaa_city_website.woff2?4b27a6ded5557fb3ab899f842c2c3d65") format("woff2"),
+url("./flaticon_aaa_city_website.woff?4b27a6ded5557fb3ab899f842c2c3d65") format("woff"),
+url("./flaticon_aaa_city_website.eot?4b27a6ded5557fb3ab899f842c2c3d65#iefix") format("embedded-opentype"),
+url("./flaticon_aaa_city_website.ttf?4b27a6ded5557fb3ab899f842c2c3d65") format("truetype"),
+url("./flaticon_aaa_city_website.svg?4b27a6ded5557fb3ab899f842c2c3d65#flaticon_aaa_city_website") format("svg");
+}
+
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+    font-family: flaticon_aaa_city_website !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+$flaticon_aaa_city_website-map: (
+    "manufacturing": "\f101",
+    "chat-bot": "\f102",
+    "chat-bot-1": "\f103",
+    "robot-chat": "\f104",
+    "software-application": "\f105",
+    "onboarding": "\f106",
+    "process": "\f107",
+    "process-1": "\f108",
+    "process-2": "\f109",
+    "data-processing": "\f10a",
+    "wrangler": "\f10b",
+    "process-diagram": "\f10c",
+    "data-driven": "\f10d",
+    "machine-learning": "\f10e",
+    "coding": "\f10f",
+    "goal": "\f110",
+    "about": "\f111",
+    "optimization": "\f112",
+    "vpn": "\f113",
+    "confidence": "\f114",
+    "chatbot": "\f115",
+    "chatbot-1": "\f116",
+);
+
+.flaticon-manufacturing:before {
+    content: map-get($flaticon_aaa_city_website-map, "manufacturing");
+}
+.flaticon-chat-bot:before {
+    content: map-get($flaticon_aaa_city_website-map, "chat-bot");
+}
+.flaticon-chat-bot-1:before {
+    content: map-get($flaticon_aaa_city_website-map, "chat-bot-1");
+}
+.flaticon-robot-chat:before {
+    content: map-get($flaticon_aaa_city_website-map, "robot-chat");
+}
+.flaticon-software-application:before {
+    content: map-get($flaticon_aaa_city_website-map, "software-application");
+}
+.flaticon-onboarding:before {
+    content: map-get($flaticon_aaa_city_website-map, "onboarding");
+}
+.flaticon-process:before {
+    content: map-get($flaticon_aaa_city_website-map, "process");
+}
+.flaticon-process-1:before {
+    content: map-get($flaticon_aaa_city_website-map, "process-1");
+}
+.flaticon-process-2:before {
+    content: map-get($flaticon_aaa_city_website-map, "process-2");
+}
+.flaticon-data-processing:before {
+    content: map-get($flaticon_aaa_city_website-map, "data-processing");
+}
+.flaticon-wrangler:before {
+    content: map-get($flaticon_aaa_city_website-map, "wrangler");
+}
+.flaticon-process-diagram:before {
+    content: map-get($flaticon_aaa_city_website-map, "process-diagram");
+}
+.flaticon-data-driven:before {
+    content: map-get($flaticon_aaa_city_website-map, "data-driven");
+}
+.flaticon-machine-learning:before {
+    content: map-get($flaticon_aaa_city_website-map, "machine-learning");
+}
+.flaticon-coding:before {
+    content: map-get($flaticon_aaa_city_website-map, "coding");
+}
+.flaticon-goal:before {
+    content: map-get($flaticon_aaa_city_website-map, "goal");
+}
+.flaticon-about:before {
+    content: map-get($flaticon_aaa_city_website-map, "about");
+}
+.flaticon-optimization:before {
+    content: map-get($flaticon_aaa_city_website-map, "optimization");
+}
+.flaticon-vpn:before {
+    content: map-get($flaticon_aaa_city_website-map, "vpn");
+}
+.flaticon-confidence:before {
+    content: map-get($flaticon_aaa_city_website-map, "confidence");
+}
+.flaticon-chatbot:before {
+    content: map-get($flaticon_aaa_city_website-map, "chatbot");
+}
+.flaticon-chatbot-1:before {
+    content: map-get($flaticon_aaa_city_website-map, "chatbot-1");
+}

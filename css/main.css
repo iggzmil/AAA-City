@@ -4007,14 +4007,7 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
     z-index: 10;
   }
 
-  .copyrights .creadits {
-    font-size: 0.75rem;
-    text-align: center;
-    width: 100%;
-    padding-bottom: 50px; /* Restored padding to ensure visibility */
-    margin: 0 auto; /* Center the text */
-    display: block !important; /* Force display */
-  }
+  .copyrights .credits {    font-size: 0.75rem;    text-align: center;    width: 100%;    padding-bottom: 50px; /* Restored padding to ensure visibility */    margin: 0 auto; /* Center the text */    display: block !important; /* Force display */  }
 
   /* Ensure the page-footer has enough space */
   .page-footer {
@@ -4125,19 +4118,8 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
   overflow: hidden;
   text-align: center;
 }
-.copyrights .creadits {
-  text-align: center;
-  font-weight: 600;
-  margin: 0 auto;
-  font-size: 0.85rem;
-  color: var(--clr-dark-grey);
-  width: 100%;
-}
-.copyrights .creadits .link {
-  font-weight: 600;
-  color: var(--clr-main);
-  text-decoration: none;
-}
+.copyrights .credits {  text-align: center;  font-weight: 600;  margin: 0 auto;  font-size: 0.85rem;  color: var(--clr-dark-grey);  width: 100%;}
+.copyrights .credits .link {  font-weight: 600;  color: var(--clr-main);  text-decoration: none;}
 .copyrights .terms-links > a {
   text-decoration: none !important;
   font-weight: 600;
@@ -4149,46 +4131,18 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
 .dark-color-footer {
   background-color: var(--clr-dark-blue);
 }
-.dark-color-footer .sc-wrapper .sc-list .sc-item:hover .sc-icon,
-.dark-color-footer .terms-links,
-.dark-color-footer .copyrights .creadits .link {
-  color: var(--clr-main);
-}
+.dark-color-footer .sc-wrapper .sc-list .sc-item:hover .sc-icon,.dark-color-footer .terms-links,.dark-color-footer .copyrights .credits .link {  color: var(--clr-main);}
 .dark-color-footer .footer-col-title {
   color: var(--clr-white);
 }
-.dark-color-footer .footer-text-about-us,
-.dark-color-footer .contact-info-card .info,
-.dark-color-footer .contact-info-card .info:hover,
-.dark-color-footer .footer-menu .footer-menu-link,
-.dark-color-footer .copyrights .creadits,
-.dark-color-footer .terms-links > a {
-  color: var(--clr-grey);
-}
-.dark-color-footer .sc-wrapper .sc-list .sc-item .sc-icon,
-.dark-color-footer .contact-info-card .info:hover,
-.dark-color-footer .footer-menu .footer-menu-link:hover,
-.dark-color-footer .copyrights .creadits .link {
-  color: var(--clr-white);
-}
+.dark-color-footer .footer-text-about-us,.dark-color-footer .contact-info-card .info,.dark-color-footer .contact-info-card .info:hover,.dark-color-footer .footer-menu .footer-menu-link,.dark-color-footer .copyrights .credits,.dark-color-footer .terms-links > a {  color: var(--clr-grey);}
+.dark-color-footer .sc-wrapper .sc-list .sc-item .sc-icon,.dark-color-footer .contact-info-card .info:hover,.dark-color-footer .footer-menu .footer-menu-link:hover,.dark-color-footer .copyrights .credits .link {  color: var(--clr-white);}
 
 .light-color-footer {
   background-color: var(--clr-grey);
 }
-.light-color-footer .footer-menu-item .icon,
-.light-color-footer .contact-info-card .icon,
-.light-color-footer .terms-links,
-.light-color-footer .copyrights .creadits .link,
-.light-color-footer .sc-wrapper .sc-list .sc-item:hover .sc-icon {
-  color: var(--clr-main);
-}
-.light-color-footer .footer-text-about-us,
-.light-color-footer .contact-info-card .info,
-.light-color-footer .footer-menu .footer-menu-link,
-.light-color-footer .copyrights .creadits,
-.light-color-footer .terms-links > a {
-  color: var(--clr-dark-grey);
-}
+.light-color-footer .footer-menu-item .icon,.light-color-footer .contact-info-card .icon,.light-color-footer .terms-links,.light-color-footer .copyrights .credits .link,.light-color-footer .sc-wrapper .sc-list .sc-item:hover .sc-icon {  color: var(--clr-main);}
+.light-color-footer .footer-text-about-us,.light-color-footer .contact-info-card .info,.light-color-footer .footer-menu .footer-menu-link,.light-color-footer .copyrights .credits,.light-color-footer .terms-links > a {  color: var(--clr-dark-grey);}
 .light-color-footer .contact-info-card .info:hover,
 .light-color-footer .footer-menu .footer-menu-link:hover,
 .light-color-footer .terms-links > a:hover {
@@ -4205,20 +4159,8 @@ body.dark-theme .footer-logo .logo-img.dark-logo {
 .main-color-footer .sc-wrapper .sc-list .sc-item:hover .sc-icon {
   color: var(--clr-main);
 }
-.main-color-footer .footer-menu-item .icon,
-.main-color-footer .contact-info-card .icon,
-.main-color-footer .terms-links,
-.main-color-footer .copyrights .creadits .link {
-  color: var(--clr-grey);
-}
-.main-color-footer .footer-col-title,
-.main-color-footer .footer-text-about-us,
-.main-color-footer .contact-info-card .info,
-.main-color-footer .footer-menu .footer-menu-link,
-.main-color-footer .copyrights .creadits,
-.main-color-footer .terms-links > a {
-  color: var(--clr-grey);
-}
+.main-color-footer .footer-menu-item .icon,.main-color-footer .contact-info-card .icon,.main-color-footer .terms-links,.main-color-footer .copyrights .credits .link {  color: var(--clr-grey);}
+.main-color-footer .footer-col-title,.main-color-footer .footer-text-about-us,.main-color-footer .contact-info-card .info,.main-color-footer .footer-menu .footer-menu-link,.main-color-footer .copyrights .credits,.main-color-footer .terms-links > a {  color: var(--clr-grey);}
 .main-color-footer .contact-info-card .info:hover,
 .main-color-footer .footer-menu .footer-menu-link:hover,
 .main-color-footer .terms-links > a:hover {

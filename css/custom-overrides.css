@@ -1,0 +1,219 @@
+/**
+ * Custom CSS Overrides for AAA City
+ * This file contains custom styles that override the main theme's styles
+ */
+
+/* Create a new stacking context for the entire page */
+html {
+  overflow-x: hidden;
+}
+
+/* Main content container */
+section, footer, header {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fixed navigation elements need to be above all content with maximum possible z-index */
+#back-to-top, 
+.back-to-top,
+.back-to-top-right {
+  /* Use fixed position for absolute placement on screen */
+  position: fixed !important;
+  
+  /* Use largest possible z-index to guarantee visibility */
+  z-index: 2147483647 !important; /* Maximum possible z-index value */
+  
+  /* Basic styling */
+  width: 3rem !important;
+  height: 3rem !important;
+  background-color: #09aff4 !important; /* Accent blue color */
+  color: white !important;
+  border-radius: 0.25rem !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-shadow: 0px 3px 15px 0px rgba(0, 0, 0, 0.25) !important;
+  text-decoration: none !important;
+  transform: none !important; /* Prevent any transform effects from causing stacking issues */
+  transition: opacity 0.3s ease, visibility 0.3s ease !important; /* Simplify transitions */
+  will-change: opacity, visibility !important; /* Optimize for hardware acceleration */
+}
+
+/* The back-to-top-link class should not have the same styling as back-to-top buttons */
+.back-to-top-link {
+  position: relative !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Ensure the logo in the footer is visible */
+.footer-logo .logo-img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 240px !important;
+  height: auto !important;
+}
+
+/* Left button (showing on scroll) */
+#back-to-top, 
+.back-to-top {
+  bottom: 30px !important;
+  left: 20px !important;
+  right: auto !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Show the button when the 'show' class is applied */
+#back-to-top.show, 
+.back-to-top.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Right button (always visible) */
+.back-to-top-right {
+  bottom: 30px !important;
+  right: 20px !important;
+  left: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Hover effect */
+#back-to-top:hover, 
+.back-to-top:hover,
+.back-to-top-right:hover {
+  background-color: rgba(9, 175, 244, 0.8) !important;
+}
+
+/* Icon styling */
+#back-to-top i, 
+.back-to-top i,
+.back-to-top-right i {
+  font-size: 1.25rem !important;
+  display: flex !important;
+}
+
+/* Specifically fix the wave container to prevent it from affecting fixed elements */
+.why-choose-us-wave-container .waves {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important; /* Keep behind content */
+  pointer-events: none !important; /* Allow clicking through */
+  overflow: hidden !important;
+}
+
+/* Fix for the portfolio section */
+.portfolio * {
+  z-index: auto !important;
+}
+
+/* Fix for parallax images in portfolio section */
+.portfolio .parallax-img,
+.portfolio .simple-parallax,
+.portfolio .simple-parallax img {
+  z-index: 0 !important;
+  transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Fix for the wave effect - hide on mobile */
+@media (max-width: 767px) {
+  .why-choose-us-wave-container .waves {
+    display: none !important;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  /* Hide back-to-top button on mobile */
+  #back-to-top,
+  .back-to-top {
+    display: none !important;
+  }
+  
+  .back-to-top-right {
+    right: 15px !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    bottom: 75px !important;
+  }
+  
+  /* Position chatbot icon higher on mobile */
+  #chat-container {
+    bottom: 65px !important;
+  }
+  
+  /* Remove spacing at the bottom of the page for mobile footer */
+  .page-footer .copyrights {
+    padding-bottom: 0 !important;
+    padding-top: 10px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Adjust copyright text for mobile */
+  .page-footer .credits {
+    margin-bottom: 0 !important;
+    padding-bottom: 5px !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Fix mobile footer text */
+  footer.page-footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Ensure consistent font size in footer links */
+  .page-footer .credits a {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+}
+}
+
+@media (max-width: 575px) {
+  #back-to-top.show,
+  .back-to-top.show,
+  .back-to-top-right {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+}
+
+/* Clear any potential issues with transforms in problematic sections */
+.portfolio *,
+.why-choose-us-wave-container * {
+  backface-visibility: visible !important;
+  perspective: none !important;
+}
+
+/* Fix for any overflow issues in sections that might affect fixed positioning */
+section {
+  overflow: visible !important; /* Prevent sections from creating stacking contexts that hide fixed elements */
+}
+
+/* Fix for footer logo visibility */
+.footer-logo .logo-img {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-width: 240px !important;
+  height: auto !important;
+}
+
+/* Ensure consistent font size in footer links regardless of screen size */
+.page-footer .credits a {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+} 
