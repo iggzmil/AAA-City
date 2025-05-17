@@ -5797,7 +5797,7 @@ i.flaticon-instagram.sc-icon {
 }
 
 /* Why Choose Us section specific styles */
-.about .why-choose-us-wave-container {  position: relative;  overflow: hidden;  background-color: rgba(0, 0, 0, 0.03); /* Slightly darker background to enhance wave visibility */  margin-top: -1.5rem; /* Reduce space between industries section and why choose us section */}
+.about .why-choose-us-wave-container {  position: relative;  background-color: rgba(0, 0, 0, 0.03); /* Slightly darker background to enhance wave visibility */  margin-top: -1.5rem; /* Reduce space between industries section and why choose us section */  overflow: visible; /* Changed from hidden to visible to prevent image cropping while allowing wave effect */}
 
 .about .waves {
   opacity: 0.8; /* Increased opacity from 0.6 */
@@ -5850,16 +5850,9 @@ i.flaticon-instagram.sc-icon {
 }
 
 /* Additional Wave Container Styling */
-.why-choose-us-wave-container .img-area {  position: relative;  z-index: 5;  /* Create padding space around the image to prevent clipping during animation */  padding: 0 30px 30px 30px;  /* Ensure container doesn't clip expanded image */  overflow: visible;}
+.why-choose-us-wave-container .img-area {  position: relative;  z-index: 5;  padding: 0;  margin-bottom: 30px;  /* Simplified to avoid conflicting styles */}
 
-.why-choose-us-wave-container .img-area .image {
-  position: relative;
-  z-index: 2;
-  border-radius: 8px;
-  overflow: hidden;
-  /* Use transform-origin to ensure image scales from center */
-  transform-origin: center center;
-}
+.why-choose-us-wave-container .img-area .image {  position: relative;  z-index: 2;  border-radius: 8px;  /* Removed overflow: hidden which was causing cropping */  transform-origin: center center;  margin: 0 auto;  width: 100%;  display: block;}
 
 /* Tablet Responsive Adjustments */
 @media (min-width: 768px) and (max-width: 991px) {
@@ -6015,7 +6008,7 @@ section, footer, header {
 }
 
 /* Specifically fix the wave container to prevent it from affecting fixed elements */
-.why-choose-us-wave-container .waves {  position: absolute !important;  top: 0 !important;  left: 0 !important;  width: 100% !important;  height: 100% !important;  z-index: -1 !important; /* Keep behind content */  pointer-events: none !important; /* Allow clicking through */  overflow: hidden !important;}
+.why-choose-us-wave-container .waves {    position: absolute !important;    top: 0 !important;    left: 0 !important;    width: 100% !important;    height: 100% !important;    z-index: -1 !important; /* Keep behind content */    pointer-events: none !important; /* Allow clicking through */    overflow: hidden !important; /* Restored for wave effect to work properly */}
 
 /* Fix for the portfolio section */
 .portfolio * {
@@ -6148,7 +6141,7 @@ section {
   opacity: 1 !important;
 }
 
-.why-choose-us-wave-container .img-area .image img {  max-width: 100%;  height: auto;  transform: scale(1);  transition: transform 0.5s ease;  will-change: transform, opacity;  position: relative;  z-index: 10;  animation: pulsate 3s ease-in-out infinite;}
+.why-choose-us-wave-container .img-area .image img {  max-width: 100%;  height: auto;  display: block;  margin: 0 auto;  /* Keep only essential properties for pulsating effect */  animation: pulsate 3s ease-in-out infinite;}
 
 /* Mobile responsive adjustments for Why Choose Us section */
-@media (max-width: 767px) {  .about .why-choose-us-wave-container {    margin-top: -10rem; /* Extreme reduction in spacing between sections */  }    .why-choose-us-wave-container .img-area {    padding: 0 10px 0 10px; /* Minimal padding on mobile */  }}
+@media (max-width: 767px) {  .about .why-choose-us-wave-container {    margin-top: -10rem; /* Extreme reduction in spacing between sections */  }    .why-choose-us-wave-container .img-area {    margin: 0 auto;    padding: 0;    max-width: 90%;  }}
