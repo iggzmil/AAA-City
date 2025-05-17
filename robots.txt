@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow crawling of administrative pages
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+Disallow: /thank-you.html
+
+# Sitemap location
+Sitemap: https://aaa.city/sitemap.xml 

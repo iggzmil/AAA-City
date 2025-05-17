@@ -232,6 +232,26 @@
   cursor: default !important;
 }
 
+/* Remove cursor change on hover for industries section industry boxes */
+.industries .posts-grid .industry-box .industry-summary .industry-text h2.industry-title:hover,
+.industries .posts-grid .industry-box .industry-summary .industry-text:hover,
+.industries .posts-grid .industry-box .industry-summary:hover,
+.industries .posts-grid .industry-box:hover .industry-summary,
+.industries .posts-grid .industry-box:hover .industry-summary *,
+.industries .posts-grid .industry-box .industry-summary .industry-title:hover {
+  cursor: default !important;
+}
+
+/* Remove cursor change on hover for industries section industry boxes (industries-grid class) */
+.industries .industries-grid .industry-box .industry-summary .industry-text h2.industry-title:hover,
+.industries .industries-grid .industry-box .industry-summary .industry-text:hover,
+.industries .industries-grid .industry-box .industry-summary:hover,
+.industries .industries-grid .industry-box:hover .industry-summary,
+.industries .industries-grid .industry-box:hover .industry-summary *,
+.industries .industries-grid .industry-box .industry-summary .industry-title:hover {
+  cursor: default !important;
+}
+
 /* Pulsate animation for Why Choose Us section image */
 @keyframes pulsate {
   0% {
