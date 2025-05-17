@@ -1,0 +1,67 @@
+/**
+ * Custom styles for Terms & Conditions and Privacy Policy pages
+ */
+
+.terms-container {
+  padding: 30px 0 60px;
+}
+
+.terms-container h1 {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.terms-container h2 {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.terms-container p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.terms-container ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.terms-container ul li {
+  margin-bottom: 10px;
+}
+
+.centered-logo {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0;
+}
+
+.centered-logo img {
+  max-width: 400px;
+  height: auto;
+}
+
+.terms-updated {
+  font-style: italic;
+  margin-top: 40px;
+  color: #999;
+}
+
+.terms-contact {
+  margin-top: 30px;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+  .centered-logo img {
+    max-width: 280px;
+  }
+  
+  .terms-container {
+    padding: 20px 0 40px;
+  }
+} 

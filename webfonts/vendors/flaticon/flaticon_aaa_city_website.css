@@ -11,11 +11,11 @@
 
 @font-face {
     font-family: "flaticon_aaa_city_website";
-    src: url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.woff2") format("woff2"),
-url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.woff") format("woff"),
-url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.eot#iefix") format("embedded-opentype"),
-url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.ttf") format("truetype"),
-url("../../webfonts/vendors/flaticon/flaticon_aaa_city_website.svg#flaticon_aaa_city_website") format("svg")
+    src: url("./flaticon_aaa_city_website.woff2?3b202e179124befffaebff0662aaf41a") format("woff2"),
+url("./flaticon_aaa_city_website.woff?3b202e179124befffaebff0662aaf41a") format("woff"),
+url("./flaticon_aaa_city_website.eot?3b202e179124befffaebff0662aaf41a#iefix") format("embedded-opentype"),
+url("./flaticon_aaa_city_website.ttf?3b202e179124befffaebff0662aaf41a") format("truetype"),
+url("./flaticon_aaa_city_website.svg?3b202e179124befffaebff0662aaf41a#flaticon_aaa_city_website") format("svg")
 }
 
 i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
@@ -39,9 +39,6 @@ i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
     content: "\f103";
 }
 .flaticon-process:before {
-    content: "\f104";
-}
-.flaticon-process-1:before {
     content: "\f104";
 }
 .flaticon-data-driven:before {
@@ -85,11 +82,5 @@ i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
 }
 .flaticon-telephone:before {
     content: "\f112";
-}
-
-/* Ensure Flaticon is properly recognized */
-.flaticon {
-    font-family: "flaticon_aaa_city_website" !important;
-    font-style: normal;
 }
 

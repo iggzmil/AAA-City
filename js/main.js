@@ -1,11 +1,3 @@
-/*===================================================
-Project: flex-it - IT Solutions & Business Services Responsive HTML5 Bootstrap5  Website Template
-Auther: amin-themes
-Version: 2.0
-Last change:22 Mar 2023
-Template Description: IT Solutions & Business Services Responsive HTML5 Bootstrap5  Website Template
-====================================================*/
-
 //GLOBAL VARIBALES
 
 //selector constants
@@ -14,10 +6,8 @@ const main_window = $(window),
   pageBody = $("body"),
   bdyOnePage = $("body.landing-page-demo "),
   toTopBtn = $(".back-to-top"),
-  heroVegasSlider = $(".page-hero.hero-vegas-slider"),
   textInput = $("form.main-form .text-input"),
-  tabLink = $(".ma-tabs .tabs-links .tab-link"),
-  portfolioGroup = $(".portfolio .portfolio-group");
+  tabLink = $(".ma-tabs .tabs-links .tab-link");
 
 $(function () {
   ("use strict");
@@ -39,16 +29,24 @@ $(function () {
 
   // Ensure buttons are positioned correctly and properly attached to the DOM
   function initBackToTopButtons() {
-    // Move buttons to body to avoid any stacking context issues
+    // Force the back-to-top buttons to stay at top z-index
     const backToTopBtn = document.getElementById('back-to-top');
     const backToTopRightBtn = document.getElementById('back-to-top-right');
     
-    if (backToTopBtn && backToTopBtn.parentElement !== document.body) {
-      document.body.appendChild(backToTopBtn);
+    if (backToTopBtn) {
+      // Move to body to avoid any stacking context issues
+      if (backToTopBtn.parentElement !== document.body) {
+        document.body.appendChild(backToTopBtn);
+      }
+      backToTopBtn.style.zIndex = "2147483647";
     }
     
-    if (backToTopRightBtn && backToTopRightBtn.parentElement !== document.body) {
-      document.body.appendChild(backToTopRightBtn);
+    if (backToTopRightBtn) {
+      // Move to body to avoid any stacking context issues
+      if (backToTopRightBtn.parentElement !== document.body) {
+        document.body.appendChild(backToTopRightBtn);
+      }
+      backToTopRightBtn.style.zIndex = "2147483647";
     }
   }
 
@@ -64,6 +62,43 @@ $(function () {
     pageBody.addClass(darkTheme_class);
   }
 
+  // Function to load animation scripts after page load
+  function loadAnimationScripts() {
+    // Helper function to load a script
+    function loadScript(src, callback) {
+      var script = document.createElement('script');
+      script.src = src;
+      script.onload = callback || function() {};
+      document.body.appendChild(script);
+    }
+
+    // Load animation scripts
+    setTimeout(function() {
+      loadScript('js/image-circle-effect.js');
+      
+      // Load wave.js and initialize wave effect after the script is loaded
+      loadScript('js/wave.js', function() {
+        // Check if we're on desktop (screen width > 767px)
+        const isMobile = window.innerWidth <= 767;
+        
+        // Initialize the wave effect for the Why Choose Us section only on desktop
+        if (!isMobile && document.getElementById('why-choose-us-waves')) {
+          const whyChooseUsWave = WaveEffect('#why-choose-us-waves', {
+            speed: 6,                // Wave animation speed (kept fast)
+            size: 3,                 // Particle size (decreased from 4)
+            color1: [0, 0.7, 1, 0.4],  // Start color (slightly reduced opacity)
+            color2: [0, 0.5, 0.5, 0.4], // End color (slightly reduced opacity)
+            density: 6,              // Point density (increased from 5 for smaller, more numerous points)
+            depth: 250               // Wave depth (decreased from 300)
+          });
+          console.log('Wave effect initialized successfully');
+        }
+      });
+    }, 100);
+  }
+
+  // Load animation scripts after window load
+  $(window).on('load', loadAnimationScripts);
 
   if ($(textInput).length) {
     let inputHasText = "has-text";
@@ -141,18 +176,6 @@ $(function () {
   // Ensure buttons stay properly positioned
   setInterval(initBackToTopButtons, 2000);
 
-  /* Start Portfolio btns  */
-  if ($(".portfolio .portfolio-btn").length) {
-    $(".portfolio .portfolio-btn").on("click", function () {
-      $(this).addClass("active").siblings().removeClass("active");
-
-      const $filterValue = $(this).attr("data-filter");
-      portfolioGroup.isotope({
-        filter: $filterValue,
-      });
-    });
-  }
-
   /* *******   initialize Counter plugin ********/
   fireCounter();
 
@@ -202,21 +225,6 @@ $(function () {
     }
   }, 10);
 
-  /* *******  loadding simpleParallax.js library ********/
-  if (!(typeof window.simpleParallax === "undefined")) {
-    // Select all parallax images
-    let parallaxBlock = document.querySelectorAll(".parallax-img");
-    if (parallaxBlock.length) {
-      // Apply parallax to all images with more conservative settings
-      new simpleParallax(parallaxBlock, {
-        delay: 0.6,
-        scale: 1.1,  // Much smaller scale to prevent layout issues
-        overflow: true,
-        transition: 'cubic-bezier(0,0,0,1)'
-      });
-    }
-  }
-
   // Function to check if an element is in viewport
   function isInViewport(element) {
     if (element.length === 0) return false;
@@ -232,7 +240,7 @@ $(function () {
 
   /*************Start Contact Form Functionality************/
 
-  const contactForm = $("#contact-us-form"),
+  const contactForm = document.getElementById('contact-us-form'),
     userName = $("#user-name"),
     userEmail = $("#user-email"),
     msgSubject = $("#msg-subject"),
@@ -270,206 +278,7 @@ $(function () {
     }
   }
 
-  // DISABLED: Using custom form handler in script/email/contact-form-validation.js instead
-  // submitBtn.on("click", function (e) {
-  //   e.preventDefault();
-
-  //   ValidateNotEmptyInput(userName, "Please Enter Your Name");
-  //   ValidateNotEmptyInput(userEmail, "Please Enter Your Email");
-  //   ValidateNotEmptyInput(msgSubject, "Please Enter Your subject");
-  //   ValidateNotEmptyInput(msgText, "Please Enter Your Message");
-  //   validateEmailInput(userEmail);
-
-  //   if (isValidInput && isValidEmail) {
-  //     $.ajax({
-  //       type: "POST",
-  //       url: contactForm.attr("action"),
-  //       data: contactForm.serialize(),
-
-  //       success: function (data) {
-  //         $(".done-msg")
-  //           .text("Thank you, Your Message Was Received!")
-  //           .toggleClass("show");
-  //         setTimeout(function () {
-  //           $(".done-msg").text("").toggleClass("show");
-  //         }, 3000);
-  //         contactForm[0].reset();
-  //       },
-  //     });
-  //     return false;
-  //   }
-  // });
-
   /*************End Contact Form Functionality************/
-
-  /* ----------------------------------
-    Start Vendors plugins options Area
-    ---------------------------------- */
-
-  //initialize swiper [Hero Section] //fade slider
-  if ($(".hero-swiper-slider.fade-effect .swiper-container").length) {
-    const heroSlider = new Swiper(
-      ".hero-swiper-slider.fade-effect .swiper-container",
-      {
-        speed: 1000,
-        loop: true,
-        reverseDirection: true,
-        effect: "fade",
-        fadeEffect: {
-          crossFade: true,
-        },
-        on: {
-          init: function () {
-            let thisSlider = this;
-            $(".slides-count").html("0" + (this.slides.length - 2));
-
-            $(".slide-num").html("0" + (this.realIndex + 1));
-          },
-          slideChange: function () {
-            $(".slide-num").html("0" + (this.realIndex + 1));
-          },
-        },
-        autoplay: {
-          delay: 5000,
-          disableOnInteraction: true,
-        },
-        pagination: {
-          el: ".hero-swiper-slider.fade-effect .swiper-pagination",
-          type: "bullets",
-          clickable: true,
-        },
-        navigation: {
-          nextEl: ".hero-swiper-slider.fade-effect .swiper-button-next",
-          prevEl: ".hero-swiper-slider.fade-effect .swiper-button-prev",
-        },
-      }
-    );
-  }
-
-  /*--- landing page Hero slider ---*/
-  if ($(".hero-swiper-slider.Landing-page-slider .swiper-container").length) {
-    const hero_swiper_slider = new Swiper(
-      ".hero-swiper-slider.Landing-page-slider .swiper-container",
-      {
-        // Optional parameters
-        direction: "horizontal",
-        loop: true,
-        touchEventsTarget: "container",
-        effect: "fade",
-        fadeEffect: {
-          crossFade: true,
-        },
-        speed: 1000,
-        parallax: true,
-        watchSlidesProgress: true,
-        on: {
-          init: function () {
-            let thisSlider = this;
-            $(".slides-count").html("0" + (this.slides.length - 2));
-
-            $(".slide-num").html("0" + (this.realIndex + 1));
-          },
-          slideChange: function () {
-            $(".slide-num").html("0" + (this.realIndex + 1));
-          },
-        },
-        autoplay: {
-          delay: 5000,
-          disableOnInteraction: true,
-        },
-
-        // If we need pagination
-        pagination: {
-          el: ".hero-swiper-slider.Landing-page-slider .swiper-pagination",
-          clickable: true,
-          type: "bullets",
-        },
-
-        // Navigation arrows
-        navigation: {
-          nextEl: ".hero-swiper-slider.Landing-page-slider .swiper-button-next",
-          prevEl: ".hero-swiper-slider.Landing-page-slider .swiper-button-prev",
-        },
-      }
-    );
-  }
-
-  /*---- portfolio Slider ----*/
-  if ($(".portfolio-slider  .swiper-container").length) {
-    const portfolio_slider = new Swiper(".portfolio-slider .swiper-container", {
-      // Optional parameters
-      direction: "horizontal",
-      loop: true,
-      touchEventsTarget: "container",
-      slidesPerView: 3,
-      spaceBetween: 30,
-      mousewheel: true,
-      centeredSlides: true,
-      speed: 1000,
-      autoplay: false,
-
-      breakpoints: {
-        0: {
-          slidesPerView: 1,
-        },
-        767: {
-          slidesPerView: 1,
-        },
-        991: {
-          slidesPerView: 2,
-        },
-        1199: {
-          slidesPerView: 3,
-        },
-      },
-
-      // Navigation arrows
-      navigation: {
-        nextEl: ".portfolio-slider .swiper-button-next",
-        prevEl: ".portfolio-slider .swiper-button-prev",
-      },
-    });
-  }
-
-  /*---- testimonials Slider ----*/
-  if ($(".testimonials-slider  .swiper-container").length) {
-    const testimonials_slider = new Swiper(
-      ".testimonials-slider .swiper-container",
-      {
-        // Optional parameters
-        direction: "horizontal",
-        loop: true,
-        touchEventsTarget: "container",
-        slidesPerView: 1,
-        spaceBetween: 30,
-        parallax: true,
-        speed: 800,
-        autoplay: {
-          delay: 5000,
-        },
-
-        // Navigation arrows
-        navigation: {
-          nextEl: ".testimonials-slider .swiper-button-next",
-          prevEl: ".testimonials-slider .swiper-button-prev",
-        },
-        pagination: {
-          el: ".testimonials-slider .swiper-pagination",
-          clickable: true,
-          type: "bullets",
-        },
-      }
-    );
-  }
-
-  /* *******  loading fancybox.js library ********/
-  if ($("*").fancybox) {
-    $().fancybox({
-      selector: '[data-fancybox=".show-in-fancybox "]:visible',
-      loop: true,
-      buttons: ["zoom", "close"],
-    });
-  }
 
   /* *******  loading tilt.js library ********/
   if (jQuery().tilt) {
@@ -478,190 +287,277 @@ $(function () {
     });
   }
 
-  /* *******  Loading the isotope plugin ********/
-  if (jQuery().isotope) {
-    portfolioGroup.isotope({
-      // options
-      itemSelector: ".portfolio-item",
-      layoutMode: "masonry",
-      percentPosition: false,
-      filter: "*",
-      stagger: 30,
-      containerStyle: null,
-    });
-  }
-
-  /* *******  Start particles.js ********/
-
-  //get the clr-main value from the html element
-
-  let particlesObj = {};
-  const getThemeMainColor = getComputedStyle($(":root")[0]).getPropertyValue(
-    "--clr-main"
-  );
-  const getThemeSecondaryColor = getComputedStyle(
-    $(":root")[0]
-  ).getPropertyValue("--clr-secondary");
-
-  const dd = () => {
-    if ($(".particles-js.dots").length) {
-      particlesObj = {
-        particlesClr: getThemeMainColor,
-        particleNumber: 150,
-        particleNumber: 150,
-        particleSize: 3,
-        particleOpacity: 0.5,
-      };
-    } else if ($(".particles-js.bubels").length) {
-      particlesObj = {
-        particlesClr: getThemeMainColor,
-        particleNumber: 15,
-        particleSize: 25,
-        particleOpacity: 0.25,
-      };
-    } else {
-      particlesObj = {};
-    }
-  };
-
-  dd();
-  if ($(".particles-js").length) {
-    // constant to hold the particals options
-    const customParticlesOptions = {
-      particles: {
-        number: {
-          value: particlesObj.particleNumber,
-          density: {
-            enable: true,
-            value_area: 500,
-          },
-        },
-        color: {
-          value: particlesObj.particlesClr,
-        },
-        shape: {
-          type: "circle",
-          stroke: {
-            width: 0,
-            color: "#000000",
-          },
-          polygon: {
-            nb_sides: 5,
-          },
-          image: {
-            src: "img/github.svg",
-            width: 100,
-            height: 100,
-          },
-        },
-        opacity: {
-          value: particlesObj.particleOpacity,
-          random: true,
-          anim: {
-            enable: true,
-            speed: 1,
-            opacity_min: 0,
-            sync: false,
-          },
-        },
-        size: {
-          value: particlesObj.particleSize,
-          random: true,
-          anim: {
-            enable: true,
-            speed: 5,
-            size_min: 0.3,
-            sync: false,
-          },
-        },
-        line_linked: {
-          enable: false,
-          distance: 150,
-          color: "#ffffff",
-          opacity: 0.4,
-          width: 1,
-        },
-        move: {
-          enable: true,
-          speed: 5,
-          direction: "none",
-          random: true,
-          straight: false,
-          out_mode: "out",
-          bounce: false,
-          attract: {
-            enable: false,
-            rotateX: 600,
-            rotateY: 1200,
-          },
-        },
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: {
-            enable: false,
-            mode: "bubble",
-          },
-          onclick: {
-            enable: false,
-            mode: "repulse",
-          },
-          resize: true,
-        },
-        modes: {
-          grab: {
-            distance: 400,
-            line_linked: {
-              opacity: 1,
-            },
-          },
-          bubble: {
-            distance: 250,
-            size: 0,
-            duration: 2,
-            opacity: 0,
-            speed: 3,
-          },
-          repulse: {
-            distance: 400,
-            duration: 0.4,
-          },
-          push: {
-            particles_nb: 4,
-          },
-          remove: {
-            particles_nb: 2,
-          },
-        },
-      },
-      retina_detect: true,
-    };
-    particlesJS("particles-js", customParticlesOptions);
-  }
-
-  /* *******  loading Splitting.js library ********/
-  if (!(typeof window.Splitting === "undefined")) {
-    if ($("[data-splitting]").length) {
-      Splitting();
-    }
-  }
-
-  /* *******  loading simpleParallax.js library ********/
-  if (!(typeof window.simpleParallax === "undefined")) {
-    // Select all parallax images
-    let parallaxBlock = document.querySelectorAll(".parallax-img");
-    if (parallaxBlock.length) {
-      // Apply parallax to all images with more conservative settings
-      new simpleParallax(parallaxBlock, {
-        delay: 0.6,
-        scale: 1.1,  // Much smaller scale to prevent layout issues
-        overflow: true,
-        transition: 'cubic-bezier(0,0,0,1)'
-      });
-    }
-  }
   /* ----------------------------------
     End Vendors plugins options Area
      ---------------------------------- */
+     
+  /* ----------------------------------
+    Start Contact Form Validation
+     ---------------------------------- */
+  
+  // Contact Form Validation
+  if (contactForm) {
+    // Get form elements
+    const nameInput = document.getElementById('user-name');
+    const emailInput = document.getElementById('user-email');
+    const subjectInput = document.getElementById('msg-subject');
+    const messageInput = document.getElementById('msg-text');
+    const submitBtn = document.getElementById('submit-btn');
+    const allInputs = [nameInput, emailInput, subjectInput, messageInput];
+    
+    // Show styled validation message
+    function showError(input, message) {
+        const errorMsgSpan = input.parentElement.querySelector('.error-msg');
+        errorMsgSpan.textContent = message;
+        errorMsgSpan.style.display = 'block';
+        input.classList.add('is-invalid');
+    }
+    
+    // Clear error message
+    function clearError(input) {
+        const errorMsgSpan = input.parentElement.querySelector('.error-msg');
+        errorMsgSpan.textContent = '';
+        errorMsgSpan.style.display = 'none';
+        input.classList.remove('is-invalid');
+    }
+    
+    // Validate name field (letters, spaces, hyphens, apostrophes)
+    function validateName(input) {
+        const value = input.value.trim();
+        if (value === '') {
+            showError(input, 'Name is required');
+            return false;
+        } else if (value.length < 2) {
+            showError(input, 'Name must be at least 2 characters');
+            return false;
+        } else if (value.length > 50) {
+            showError(input, 'Name must be no more than 50 characters');
+            return false;
+        } else if (!/^[A-Za-z\s\-\']+$/.test(value)) {
+            showError(input, 'Name can only contain letters, spaces, hyphens, and apostrophes');
+            return false;
+        } else {
+            clearError(input);
+            return true;
+        }
+    }
+    
+    // Validate email field
+    function validateEmail(input) {
+        const value = input.value.trim();
+        if (value === '') {
+            showError(input, 'Email is required');
+            return false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            showError(input, 'Please enter a valid email address');
+            return false;
+        } else {
+            clearError(input);
+            return true;
+        }
+    }
+    
+    // Validate company/subject field
+    function validateSubject(input) {
+        const value = input.value.trim();
+        if (value === '') {
+            showError(input, 'Company name is required');
+            return false;
+        } else if (value.length < 2) {
+            showError(input, 'Company name must be at least 2 characters');
+            return false;
+        } else if (value.length > 100) {
+            showError(input, 'Company name must be no more than 100 characters');
+            return false;
+        } else {
+            clearError(input);
+            return true;
+        }
+    }
+    
+    // Validate message field
+    function validateMessage(input) {
+        const value = input.value.trim();
+        if (value === '') {
+            showError(input, 'Message is required');
+            return false;
+        } else if (value.length < 10) {
+            showError(input, 'Message must be at least 10 characters');
+            return false;
+        } else if (value.length > 1000) {
+            showError(input, 'Message must be no more than 1000 characters');
+            return false;
+        } else {
+            clearError(input);
+            return true;
+        }
+    }
+    
+    // Validate all form fields
+    function validateForm() {
+        const isNameValid = validateName(nameInput);
+        const isEmailValid = validateEmail(emailInput);
+        const isSubjectValid = validateSubject(subjectInput);
+        const isMessageValid = validateMessage(messageInput);
+        
+        return isNameValid && isEmailValid && isSubjectValid && isMessageValid;
+    }
+    
+    // Add input event listeners for real-time validation
+    nameInput.addEventListener('input', function() {
+        validateName(this);
+    });
+    
+    emailInput.addEventListener('input', function() {
+        validateEmail(this);
+    });
+    
+    subjectInput.addEventListener('input', function() {
+        validateSubject(this);
+    });
+    
+    messageInput.addEventListener('input', function() {
+        validateMessage(this);
+    });
+    
+    // Add blur event listeners for validation when leaving a field
+    allInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            // Call appropriate validation function based on input ID
+            if (this.id === 'user-name') {
+                validateName(this);
+            } else if (this.id === 'user-email') {
+                validateEmail(this);
+            } else if (this.id === 'msg-subject') {
+                validateSubject(this);
+            } else if (this.id === 'msg-text') {
+                validateMessage(this);
+            }
+        });
+    });
+    
+    // Form submission with enhanced validation
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // Always prevent default form submission
+      
+      // First validate all fields
+      const isValid = validateForm();
+      
+      if (!isValid) {
+          // Focus the first input with an error
+          const firstInvalidInput = document.querySelector('.is-invalid');
+          if (firstInvalidInput) {
+              firstInvalidInput.focus();
+          }
+          return false;
+      }
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      const originalButtonText = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Sending...';
+      
+      // Create FormData
+      const formData = new FormData(contactForm);
+      
+      // Log the form data being sent (for debugging)
+      console.log('Sending form data to:', contactForm.action);
+      for (let pair of formData.entries()) {
+          console.log(pair[0] + ': ' + pair[1]);
+      }
+      
+      // Use AJAX to submit the form
+      fetch(contactForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+              // Don't set Content-Type when using FormData - it will be set automatically with boundary
+          }
+      })
+      .then(response => {
+          console.log('Server response status:', response.status);
+          
+          if (!response.ok) {
+              if (response.status === 405) {
+                  throw new Error('Method Not Allowed (405): The server does not allow POST requests to this endpoint. Please check server configuration.');
+              }
+              throw new Error(`Server responded with status: ${response.status}`);
+          }
+          
+          // First try to get response as text
+          return response.text().then(text => {
+              try {
+                  // Try to parse as JSON
+                  return JSON.parse(text);
+              } catch (e) {
+                  // If not valid JSON, return the text
+                  console.error('Server returned non-JSON response:', text);
+                  return {
+                      success: false,
+                      message: 'Server returned an invalid response format',
+                      raw: text
+                  };
+              }
+          });
+      })
+      .then(data => {
+          // Reset button state
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalButtonText;
+          
+          // Handle the response
+          handleFormSubmissionResponse(data);
+      })
+      .catch(error => {
+          // Reset button state
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalButtonText;
+          
+          // Show error message
+          alert('Error: ' + error.message);
+          console.error('Form submission error:', error);
+      });
+    });
+    
+    // Handle successful form submission response
+    function handleFormSubmissionResponse(response) {
+        if (response.success) {
+            // Show success message
+            const doneMsg = contactForm.querySelector('.done-msg');
+            doneMsg.textContent = response.message;
+            doneMsg.classList.add('show');
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Clear success message after delay
+            setTimeout(function() {
+                doneMsg.textContent = '';
+                doneMsg.classList.remove('show');
+            }, 5000);
+        } else {
+            // Show error message
+            if (response.errors && Array.isArray(response.errors)) {
+                // Display field-specific errors
+                response.errors.forEach(error => {
+                    // Attempt to determine which field the error is for
+                    if (error.toLowerCase().includes('name')) {
+                        showError(nameInput, error);
+                    } else if (error.toLowerCase().includes('email')) {
+                        showError(emailInput, error);
+                    } else if (error.toLowerCase().includes('company')) {
+                        showError(subjectInput, error);
+                    } else if (error.toLowerCase().includes('message')) {
+                        showError(messageInput, error);
+                    }
+                });
+            } else {
+                // Display general error message
+                alert(response.message || 'An error occurred. Please try again.');
+            }
+        }
+    }
+  }
 });

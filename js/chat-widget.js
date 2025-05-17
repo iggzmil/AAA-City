@@ -1,482 +1,642 @@
 /**
  * AAA City Chat Widget with N8N Integration
- * A customized chat widget for AAA City website that integrates with N8N workflows
+ * A simplified version that focuses on essential functionality
  */
 
-class AAACityChatWidget {
-  constructor(options = {}) {
-    this.options = {
-      target: 'chat-container',
-      webhookUrl: '', // Required: N8N webhook URL
-      webhookConfig: {
-        method: 'POST',
-        headers: {}
-      },
-      initialMessages: [],
-      metadata: {},
-      minimized: true,
-      minimizedContent: '',
-      chatInputKey: 'chatInput',
-      chatSessionKey: 'sessionId',
-      // Add fallback responses for when the webhook is unavailable
-      fallbackResponses: {
-        default: "I'm sorry, I'm having trouble connecting right now. Please try again later."
-      },
-      ...options
-    };
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if we need to auto-open the chat
+  const urlParams = new URLSearchParams(window.location.search);
+  const shouldOpenChat = urlParams.get('openChat') === 'true';
 
-    this.container = document.getElementById(this.options.target);
-    this.sessionId = this.getSessionId();
-    this.messageHistory = this.loadSavedMessages();
-    this.isProcessing = false;
-    this.loadingIndicator = null;
-    this.isFirstMessage = true; // Flag to track if this is the first message in the session
-    this.init();
+  // Create chat container if it doesn't exist
+  let chatContainer = document.getElementById('chat-container');
+  if (!chatContainer) {
+    chatContainer = document.createElement('div');
+    chatContainer.id = 'chat-container';
+    document.body.appendChild(chatContainer);
   }
 
-  /**
-   * Initialize the chat widget
-   */
-  init() {
-    if (!this.container) {
-      console.error('Chat container not found');
-      return;
+  // Create a shadow root for style isolation
+  const shadowRoot = chatContainer.attachShadow({ mode: 'open' });
+
+  // Add chat widget styles to the shadow DOM
+  const chatStyles = document.createElement('style');
+  chatStyles.textContent = `
+    /* Base container */
+    .tde-chat-container {
+      position: fixed;
+      bottom: 30px;
+      right: 20px;
+      left: auto;
+      z-index: 9999;
+      font-family: 'Jost', sans-serif;
+      transition: all 0.3s ease;
     }
 
-    console.log('Initializing chat widget');
+    /* Chat bubble message that appears from the right */
+    .tde-chat-bubble {
+      position: absolute;
+      bottom: 50px;
+      right: 10px;
+      background-color: black;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 15px;
+      border-bottom-right-radius: 0;
+      font-size: 14px;
+      border: 1px solid white;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+      max-width: 300px;
+      width: max-content;
+      white-space: normal;
+      animation: bubble-in 0.5s ease-out forwards;
+      opacity: 0;
+      transform: translateX(50px);
+      pointer-events: none;
+      z-index: 9998;
+    }
 
-    // Always clear chat history and local storage on load
-    this.clearChatHistory();
-    localStorage.removeItem('chat-messages');
-    localStorage.removeItem(this.options.chatSessionKey);
-
-    // Clear any other chat-related items from localStorage
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && (key.includes('chat') || key.includes('session'))) {
-        localStorage.removeItem(key);
+    /* Mobile adjustments */
+    @media (max-width: 767px) {
+      .tde-chat-container {
+        bottom: 65px !important;
       }
-    }
-
-    // Always generate a new session ID to ensure a fresh conversation
-    this.sessionId = this.generateNewSessionId();
-
-    // Reset the message history array
-    this.messageHistory = [];
-
-    // Set first message flag to true for a new session
-    this.isFirstMessage = true;
-
-    // Add base class
-    this.container.classList.add('tde-chat-container');
-
-    // Set initial state
-    if (this.options.minimized) {
-      this.container.classList.add('minimized');
-    }
-
-    this.createDOM();
-    this.attachEventListeners();
-
-    // Display initial messages
-    this.displayInitialMessages();
-
-    console.log('Chat widget initialized with new session ID:', this.sessionId);
-    console.log('Memory cleared, starting with fresh conversation');
-  }
-
-  /**
-   * Generate a new session ID (always creates a new one)
-   */
-  generateNewSessionId() {
-    // Create a unique session ID with timestamp to ensure uniqueness
-    const timestamp = new Date().getTime();
-    const randomPart = Math.floor(Math.random() * 10000);
-    const newSessionId = `${timestamp}-${randomPart}`;
-
-    // Store in localStorage
-    localStorage.setItem(this.options.chatSessionKey, newSessionId);
-
-    return newSessionId;
-  }
-
-  /**
-   * Clear chat history from localStorage and memory
-   */
-  clearChatHistory() {
-    localStorage.removeItem('chat-messages');
-    localStorage.removeItem(this.options.chatSessionKey);
-    this.messageHistory = [];
-
-    // Clear messages container if it exists
-    if (this.messagesContainer) {
-      this.messagesContainer.innerHTML = '';
-    }
-  }
-
-  /**
-   * Load saved messages from localStorage
-   */
-  loadSavedMessages() {
-    // Always start with empty history
-    console.log('Starting with empty chat history');
-    return [];
-  }
-
-  /**
-   * Display initial welcome messages
-   */
-  displayInitialMessages() {
-    if (this.options.initialMessages && this.options.initialMessages.length > 0) {
-      this.options.initialMessages.forEach(message => this.addMessage(message, 'bot'));
-    }
-  }
-
-  /**
-   * Create the DOM elements for the chat widget
-   */
-  createDOM() {
-    // Create minimized view
-    this.minimizedView = document.createElement('div');
-    this.minimizedView.className = 'tde-chat-minimized';
-    if (this.options.minimizedContent) {
-      this.minimizedView.innerHTML = this.options.minimizedContent;
-    } else {
-      this.minimizedView.innerHTML = `
-        <img src="images/chat-icon.svg" alt="Chat Icon">
-        <span>Hey 👋 Need help? Let's chat!</span>
-      `;
-    }
-
-    // Create expanded view
-    this.expandedView = document.createElement('div');
-    this.expandedView.className = 'tde-chat-expanded';
-
-    // Create header with two lines
-    const header = document.createElement('div');
-    header.className = 'tde-chat-header';
-    header.innerHTML = `
-        <div class="tde-chat-title">
-            <div class="title-main"><img src="images/AAA_City_logo_white_small.png" alt="AAA City" class="chat-logo"></div>
-            <div class="title-sub">AI Assistant</div>
-        </div>
-        <button class="tde-chat-close-btn">Close Chat</button>
-    `;
-
-    // Create messages container
-    this.messagesContainer = document.createElement('div');
-    this.messagesContainer.className = 'tde-chat-messages';
-
-    // Create input area
-    const inputArea = document.createElement('div');
-    inputArea.className = 'tde-chat-input-area';
-    inputArea.innerHTML = `
-        <input type="text" class="tde-chat-input" placeholder="Type your message...">
-        <button class="tde-chat-send">Send</button>
-    `;
-
-    // Assemble expanded view
-    this.expandedView.appendChild(header);
-    this.expandedView.appendChild(this.messagesContainer);
-    this.expandedView.appendChild(inputArea);
-
-    // Add both views to container
-    this.container.appendChild(this.minimizedView);
-    this.container.appendChild(this.expandedView);
-  }
-
-  /**
-   * Attach event listeners to chat elements
-   */
-  attachEventListeners() {
-    // Toggle on minimized view click
-    this.minimizedView.addEventListener('click', () => this.toggle());
-
-    // Close button click
-    const closeBtn = this.expandedView.querySelector('.tde-chat-close-btn');
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggle();
-    });
-
-    // Send message on button click
-    const sendMessage = () => {
-      const inputElem = this.expandedView.querySelector('.tde-chat-input');
-      const message = inputElem.value.trim();
       
-      if (message && !this.isProcessing) {
-        // Add user message to chat
-        this.addMessage(message, 'user');
-        
-        // Clear input
-        inputElem.value = '';
-        
-        // Process the message
-        this.processUserMessage(message);
+      /* Hide chat bubble on mobile devices */
+      .tde-chat-bubble {
+        display: none !important;
       }
-    };
+    }
 
-    // Send button click
-    const sendBtn = this.expandedView.querySelector('.tde-chat-send');
-    sendBtn.addEventListener('click', sendMessage);
+    /* Add triangle pointer to make bubble appear from the icon */
+    .tde-chat-bubble:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      right: 15px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid black;
+    }
 
-    // Send on Enter key
-    const inputElem = this.expandedView.querySelector('.tde-chat-input');
-    inputElem.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage();
+    @keyframes bubble-in {
+      to {
+        opacity: 1;
+        transform: translateX(0);
       }
-    });
-  }
+    }
 
-  /**
-   * Toggle between minimized and expanded states
-   */
-  toggle() {
-    if (this.container.classList.contains('minimized')) {
+    /* Hide bubble when chat is expanded */
+    .tde-chat-container:not(.minimized) .tde-chat-bubble {
+      display: none;
+    }
+
+    /* Display bubble with delay after page load */
+    .tde-chat-bubble.show {
+      display: block;
+    }
+
+    /* Minimized state */
+    .tde-chat-container.minimized {
+      width: auto;
+      height: auto;
+      cursor: pointer;
+    }
+
+    .tde-chat-container.minimized .tde-chat-expanded {
+      display: none;
+    }
+
+    .tde-chat-container.minimized .tde-chat-minimized {
+      display: flex;
+    }
+
+    /* Expanded state */
+    .tde-chat-container:not(.minimized) {
+      width: 320px;
+      height: 480px;
+      background: black;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tde-chat-container:not(.minimized) .tde-chat-minimized {
+      display: none;
+    }
+
+    .tde-chat-container:not(.minimized) .tde-chat-expanded {
+      display: flex;
+    }
+
+    /* Minimized button */
+    .tde-chat-minimized {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      padding: 0;
+      background-color: #09aff4;
+      color: white;
+      border-radius: 0.25rem;
+      box-shadow: 0px 3px 15px 0px rgba(0, 0, 0, 0.25);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .tde-chat-minimized:hover {
+      background-color: rgba(9, 175, 244, 0.8);
+      transform: translateY(-2px);
+    }
+
+        .tde-chat-minimized i {      font-size: 2rem;      color: white !important;      display: flex;      align-items: center;      justify-content: center;      position: relative;      width: 100%;      height: 100%;    }
+
+    .tde-chat-minimized span {
+      display: none;
+    }
+
+    /* Expanded view */
+    .tde-chat-expanded {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Header */
+    .tde-chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: #09aff4;
+      color: #ffffff;
+      min-height: 65px;
+      border: none;
+      box-shadow: none;
+    }
+
+    .tde-chat-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border: none;
+    }
+
+    .tde-chat-title .title-main {
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .tde-chat-title .title-main .chat-logo {
+      max-height: 37.5px;
+      width: auto;
+      display: block;
+    }
+
+    .tde-chat-title .title-sub {
+      font-size: 15px;
+      opacity: 0.85;
+    }
+
+    .tde-chat-close-btn {
+      background: rgba(255, 255, 255, 0.35);
+      border: none;
+      color: #ffffff;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .tde-chat-close-btn:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Messages area */
+    .tde-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #111;
+    }
+
+    .tde-chat-message {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #fff;
+    }
+
+    .tde-chat-message.bot {
+      align-self: flex-start;
+      background: #333;
+      border-bottom-left-radius: 4px;
+    }
+
+    .tde-chat-message.user {
+      align-self: flex-end;
+      background: #09aff4;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* Input area */
+    .tde-chat-input-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-top: 1px solid #333;
+      background: #111;
+      min-height: 35px;
+    }
+
+    .tde-chat-input {
+      flex: 1;
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      background: #222;
+      color: #ffffff;
+    }
+
+    .tde-chat-input:focus {
+      border-color: #09aff4;
+    }
+
+    .tde-chat-send {
+      height: 28px;
+      padding: 0 12px;
+      background: #09aff4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tde-chat-send:hover {
+      background-color: rgba(9, 175, 244, 0.8);
+    }
+
+    /* Loading indicator */
+    .tde-chat-loading {
+      padding: 8px 12px;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+    }
+
+    .tde-chat-loading .dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tde-chat-loading .dot {
+      width: 8px;
+      height: 8px;
+      background: #09aff4;
+      border-radius: 50%;
+      animation: dot-pulse 1.5s infinite ease-in-out;
+    }
+
+    .tde-chat-loading .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .tde-chat-loading .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% {
+        transform: scale(0.7);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Processing state */
+    .tde-chat-container.processing .tde-chat-input,
+    .tde-chat-container.processing .tde-chat-send {
+      pointer-events: none;
+    }
+
+    .tde-chat-container.processing .tde-chat-input {
+      opacity: 0.7;
+    }
+  `;
+  shadowRoot.appendChild(chatStyles);
+
+  // Create the chat widget root element
+  const chatWidgetRoot = document.createElement('div');
+  chatWidgetRoot.className = 'tde-chat-container minimized';
+  shadowRoot.appendChild(chatWidgetRoot);
+
+  // Create chat bubble
+  const chatBubble = document.createElement('div');
+  chatBubble.className = 'tde-chat-bubble';
+  chatBubble.textContent = '👋 Got questions about automation?';
+  chatWidgetRoot.appendChild(chatBubble);
+
+  // Create minimized view
+  const minimizedView = document.createElement('div');
+  minimizedView.className = 'tde-chat-minimized';
+  minimizedView.innerHTML = `
+    <i class="flaticon-chat-bot"></i>
+  `;
+  chatWidgetRoot.appendChild(minimizedView);
+
+  // Create expanded view
+  const expandedView = document.createElement('div');
+  expandedView.className = 'tde-chat-expanded';
+  expandedView.innerHTML = `
+    <div class="tde-chat-header">
+      <div class="tde-chat-title">
+        <div class="title-main"><img src="images/AAA_City_logo.webp" alt="AAA City" class="chat-logo"></div>
+        <div class="title-sub">AI Assistant</div>
+      </div>
+      <button class="tde-chat-close-btn">Close Chat</button>
+    </div>
+    <div class="tde-chat-messages"></div>
+    <div class="tde-chat-input-area">
+      <input type="text" class="tde-chat-input" placeholder="Type your message...">
+      <button class="tde-chat-send">Send</button>
+    </div>
+  `;
+  chatWidgetRoot.appendChild(expandedView);
+
+  // Import the font to use in Shadow DOM
+  const fontLink = document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap';
+  shadowRoot.appendChild(fontLink);
+  
+  // Import Flaticon font to use in Shadow DOM
+  const flaticonLink = document.createElement('link');
+  flaticonLink.rel = 'stylesheet';
+  flaticonLink.href = 'css/vendors/flaticon.css';
+  shadowRoot.appendChild(flaticonLink);
+
+  // Get reference to message container
+  const messagesContainer = expandedView.querySelector('.tde-chat-messages');
+  
+  // Track session state
+  let isProcessing = false;
+  let loadingIndicator = null;
+  let messageHistory = [];
+  const sessionId = `${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`;
+  let isFirstMessage = true;
+  
+  // Add initial messages
+  addMessage("👋 Hi there! I'm the AAA City AI assistant.", 'bot');
+  addMessage("How can I help you with automation today? Feel free to ask questions about our services or capabilities.", 'bot');
+  
+  // Show bubble with delay
+  setTimeout(() => {
+    chatBubble.classList.add('show');
+  }, 2000);
+
+  // Toggle function for expanding/minimizing the chat
+  function toggle() {
+    console.log('Toggle function called');
+    console.log('Current state:', chatWidgetRoot.classList.contains('minimized') ? 'minimized' : 'expanded');
+    
+    if (chatWidgetRoot.classList.contains('minimized')) {
       // Expanding
-      this.container.classList.remove('minimized');
+      console.log('Expanding chat widget');
+      chatWidgetRoot.classList.remove('minimized');
       
       // Focus input field when expanded
       setTimeout(() => {
-        const inputElem = this.expandedView.querySelector('.tde-chat-input');
+        const inputElem = expandedView.querySelector('.tde-chat-input');
         if (inputElem) {
           inputElem.focus();
         }
       }, 300);
+      
+      // Hide bubble
+      chatBubble.style.display = 'none';
     } else {
       // Minimizing
-      this.container.classList.add('minimized');
-    }
-  }
-
-  /**
-   * Reset the session completely
-   */
-  resetSession() {
-    // Clear chat history
-    this.clearChatHistory();
-    
-    // Generate new session ID
-    this.sessionId = this.generateNewSessionId();
-    
-    // Reset first message flag
-    this.isFirstMessage = true;
-    
-    // Clear messages container
-    if (this.messagesContainer) {
-      this.messagesContainer.innerHTML = '';
-    }
-    
-    // Display initial messages again
-    this.displayInitialMessages();
-    
-    console.log('Chat session reset with new session ID:', this.sessionId);
-  }
-
-  /**
-   * Process a user message
-   */
-  async processUserMessage(message) {
-    try {
-      this.setProcessingState(true);
-      const response = await this.sendToN8N(message);
+      console.log('Minimizing chat widget');
+      chatWidgetRoot.classList.add('minimized');
       
-      if (response && (response.message || response.output)) {
-        this.addMessage(response.message || response.output, 'bot');
-      } else {
-        // Use fallback response if no valid response
-        this.addMessage(this.getFallbackResponse(message), 'bot');
-      }
-    } catch (error) {
-      console.error('Error processing message:', error);
-      this.addMessage(this.getFallbackResponse(message), 'bot');
-    } finally {
-      this.setProcessingState(false);
-      this.isFirstMessage = false;
+      // Show the bubble again when minimizing
+      setTimeout(() => {
+        chatBubble.style.display = 'block';
+        chatBubble.classList.add('show');
+      }, 300);
     }
   }
 
-  /**
-   * Add a message to the chat
-   */
-  addMessage(text, sender) {
+  // Add a message to the chat
+  function addMessage(text, sender) {
     const messageElem = document.createElement('div');
     messageElem.className = `tde-chat-message ${sender}`;
     messageElem.textContent = text;
     
-    this.messagesContainer.appendChild(messageElem);
+    messagesContainer.appendChild(messageElem);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
     
-    // Scroll to bottom
-    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-    
-    // Save to history
-    this.messageHistory.push({ text, sender, timestamp: new Date().getTime() });
-    this.saveMessages();
+    // Save the message to history
+    messageHistory.push({ text, sender, timestamp: new Date().getTime() });
   }
 
-  /**
-   * Get the session ID from localStorage or generate a new one
-   */
-  getSessionId() {
-    const savedId = localStorage.getItem(this.options.chatSessionKey);
-    if (savedId) {
-      return savedId;
-    }
-    return this.generateNewSessionId();
+  // Create loading indicator
+  function createLoadingIndicator() {
+    if (loadingIndicator) return;
+    
+    loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'tde-chat-loading';
+    loadingIndicator.innerHTML = `<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+    
+    messagesContainer.appendChild(loadingIndicator);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
-  /**
-   * Save messages to localStorage
-   */
-  saveMessages() {
-    localStorage.setItem('chat-messages', JSON.stringify(this.messageHistory));
-  }
-
-  /**
-   * Get fallback response when webhook fails
-   */
-  getFallbackResponse(message) {
-    const { fallbackResponses } = this.options;
-    const lowerMessage = message.toLowerCase();
+  // Show/hide processing state
+  function setProcessingState(processing) {
+    isProcessing = processing;
     
-    // Check for specific keywords
-    if (lowerMessage.includes('help')) {
-      return fallbackResponses.help || fallbackResponses.default;
-    }
-    
-    if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-      return fallbackResponses.pricing || fallbackResponses.default;
-    }
-    
-    if (lowerMessage.includes('services') || lowerMessage.includes('offer')) {
-      return fallbackResponses.services || fallbackResponses.default;
-    }
-    
-    // Default fallback response
-    return fallbackResponses.default;
-  }
-
-  /**
-   * Create the loading indicator
-   */
-  createLoadingIndicator() {
-    const loadingElem = document.createElement('div');
-    loadingElem.className = 'tde-chat-loading';
-    
-    const dots = document.createElement('div');
-    dots.className = 'dots';
-    
-    for (let i = 0; i < 3; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'dot';
-      dots.appendChild(dot);
-    }
-    
-    loadingElem.appendChild(dots);
-    return loadingElem;
-  }
-
-  /**
-   * Set processing state (show/hide loading indicator)
-   */
-  setProcessingState(isProcessing) {
-    this.isProcessing = isProcessing;
-    
-    // Add/remove processing class
-    if (isProcessing) {
-      this.container.classList.add('processing');
-      
-      // Add loading indicator
-      if (!this.loadingIndicator) {
-        this.loadingIndicator = this.createLoadingIndicator();
-        this.messagesContainer.appendChild(this.loadingIndicator);
-        
-        // Scroll to bottom
-        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-      }
-      
-      // Disable input
-      const inputElem = this.expandedView.querySelector('.tde-chat-input');
-      if (inputElem) {
-        inputElem.disabled = true;
-      }
+    if (processing) {
+      chatWidgetRoot.classList.add('processing');
+      createLoadingIndicator();
     } else {
-      this.container.classList.remove('processing');
+      chatWidgetRoot.classList.remove('processing');
       
-      // Remove loading indicator
-      if (this.loadingIndicator && this.loadingIndicator.parentNode) {
-        this.loadingIndicator.parentNode.removeChild(this.loadingIndicator);
-        this.loadingIndicator = null;
+      if (loadingIndicator) {
+        messagesContainer.removeChild(loadingIndicator);
+        loadingIndicator = null;
       }
       
-      // Enable input
-      const inputElem = this.expandedView.querySelector('.tde-chat-input');
+      // Re-focus the input field
+      const inputElem = expandedView.querySelector('.tde-chat-input');
       if (inputElem) {
-        inputElem.disabled = false;
         inputElem.focus();
       }
     }
   }
 
-  /**
-   * Send message to N8N webhook
-   */
-  async sendToN8N(message, action = 'sendMessage') {
-    if (!this.options.webhookUrl) {
-      console.error('No webhook URL provided');
-      return null;
+  // Get fallback response when webhook fails
+  function getFallbackResponse(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for specific keywords
+    if (lowerMessage.includes('help')) {
+      return "I'd be happy to help! You can ask me about our automation services, web development, or how we can help streamline your business processes. If you need immediate assistance, please email us at info@aaa-city.com.";
     }
+    
+    if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+      return "Our pricing varies depending on the specific services and solution complexity. For a personalized quote, we recommend contacting our team who can assess your needs and provide detailed pricing information.";
+    }
+    
+    if (lowerMessage.includes('services') || lowerMessage.includes('offer')) {
+      return "We offer a range of automation services including web development with automation, AI chatbots, virtual assistants, document processing, and custom workflow automation. Would you like more information about a specific service?";
+    }
+    
+    // Default fallback response
+    return "I'm sorry, I'm having trouble connecting right now. Please try again later or contact us directly at info@aaa-city.com.";
+  }
 
+  // Process user message
+  async function processUserMessage(message) {
     try {
-      // Add metadata about the request
+      setProcessingState(true);
+      
+      // Build the payload
       const payload = {
-        sessionId: this.sessionId,
+        sessionId: sessionId,
         message,
-        action,
-        isFirstMessage: this.isFirstMessage,
+        action: 'sendMessage',
+        isFirstMessage: isFirstMessage,
         metadata: {
           userAgent: navigator.userAgent,
           timestamp: new Date().toISOString(),
           url: window.location.href,
           referrer: document.referrer,
-          ...this.options.metadata
+          source: 'website',
+          page: window.location.pathname.split('/').pop().split('.')[0] || 'home'
         }
       };
-
-      console.log('Sending to webhook:', this.options.webhookUrl);
-      console.log('Payload:', JSON.stringify(payload));
-
+      
       // Send to webhook
-      const response = await fetch(this.options.webhookUrl, {
+      const response = await fetch('https://n8n.aaa-city.com/webhook/308218cd-67c4-41b1-a6d9-44c64924decb/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          ...this.options.webhookConfig.headers
+          'Accept': 'application/json'
         },
         body: JSON.stringify(payload)
       });
-
+      
       if (!response.ok) {
-        console.error(`Webhook error (${response.status})`);
         throw new Error(`Webhook response not OK: ${response.status}`);
       }
-
-      // Get the response text first
-      const responseText = await response.text();
-      console.log('Raw response:', responseText);
       
-      // Try to parse as JSON, but fall back to plain text if needed
+      // Parse response
+      let responseData;
       try {
-        return JSON.parse(responseText);
-      } catch (jsonError) {
-        console.log('Response is not JSON, using as plain text message');
-        return { message: responseText };
+        const responseText = await response.text();
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error('Failed to parse response');
+      }
+      
+      // Add the response to the chat
+      if (responseData && (responseData.message || responseData.output)) {
+        addMessage(responseData.message || responseData.output, 'bot');
+      } else {
+        addMessage(getFallbackResponse(message), 'bot');
       }
     } catch (error) {
-      console.error('Error sending to webhook:', error);
-      return null;
+      console.error('Error processing message:', error);
+      addMessage(getFallbackResponse(message), 'bot');
+    } finally {
+      setProcessingState(false);
+      isFirstMessage = false;
     }
   }
-} 
+
+  // Send message function
+  function sendMessage() {
+    const inputElem = expandedView.querySelector('.tde-chat-input');
+    const message = inputElem.value.trim();
+    
+    if (message && !isProcessing) {
+      // Add user message to chat
+      addMessage(message, 'user');
+      
+      // Clear input
+      inputElem.value = '';
+      
+      // Process the message
+      processUserMessage(message);
+      
+      // Return focus to input field
+      inputElem.focus();
+    }
+  }
+
+  // Add event listeners
+  // Minimized view click
+  minimizedView.addEventListener('click', function(e) {
+    console.log('Minimized view clicked');
+    e.preventDefault();
+    e.stopPropagation();
+    toggle();
+  });
+  
+  // Close button click
+  const closeBtn = expandedView.querySelector('.tde-chat-close-btn');
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+  
+  // Send button click
+  const sendBtn = expandedView.querySelector('.tde-chat-send');
+  sendBtn.addEventListener('click', sendMessage);
+  
+  // Input Enter key
+  const inputElem = expandedView.querySelector('.tde-chat-input');
+  inputElem.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  // Auto-expand chat if URL parameter is set
+  if (shouldOpenChat) {
+    toggle();
+  }
+
+  // Expose to global scope
+  window.aaaCityChat = {
+    toggle,
+    addMessage,
+    processUserMessage
+  };
+}); 

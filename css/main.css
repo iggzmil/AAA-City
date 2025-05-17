@@ -5577,3 +5577,617 @@ body.dark-theme .about .stats-counter.stats-cards .stat-box {
 .industries .industries-grid .industry-summary .industry-excerpt {
   margin-bottom: 0rem;
 }
+
+/* 
+ * CUSTOM STYLES FROM custom.css and custom-overrides.css
+ * Consolidated for better performance
+ */
+
+/* ===== Styles from custom.css ===== */
+/* Make service boxes equal height */
+.services-boxed .service-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.services-boxed .service-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.services-boxed .service-text {
+  flex-grow: 1;
+}
+
+/* Fix for Flaticon social media icons */
+i.flaticon-facebook-logo.sc-icon,
+i.flaticon-twitter.sc-icon,
+i.flaticon-instagram.sc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Enhanced radar effect with cyan/teal colors */
+.radar {
+  background-color: rgba(0, 210, 255, 0.5);
+  opacity: 0.1;
+  width: 105%;
+  height: 105%;
+  top: -2.5%;
+  left: -2.5%;
+}
+
+.radar:before, .radar:after {
+  background-color: rgba(0, 210, 255, 0.5);
+  opacity: 0.1;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes bg-waves {
+  0% {
+    scale: 0.5 0.5 1;
+    opacity: 0;
+  }
+  50% {
+    background-color: rgba(0, 128, 128, 0.7);
+    opacity: 0.7;
+    scale: 1.1 1.1 1;
+  }
+  100% {
+    scale: 1.4 1.4 1;
+    opacity: 0;
+    background-color: rgba(0, 210, 255, 0.5);
+  }
+}
+
+/* Enhanced orbit effect */
+.orbit {
+  border: 2px solid rgba(0, 210, 255, 0.5);
+}
+
+.orbit:before, .orbit:after {
+  background-color: #00D2FF;
+  box-shadow: 0 0 10px 2px rgba(0, 210, 255, 0.7);
+}
+
+/* About section uses the standard orbit effect from main-LTR.css */
+
+/* Fix for about section image and circle interaction */
+.about .img-area {
+  position: relative;
+}
+
+.about .img-area .image {
+  position: relative;
+  z-index: 1; /* Lower z-index than the circle */
+}
+
+.about .img-area .circle-decoration {
+  position: absolute;
+  z-index: 10; /* Higher z-index to stay above the image */
+}
+
+/* ---------------------- */
+/* WAVE EFFECT CONTAINER  */
+/* ---------------------- */
+
+/* Container for the WebGL wave effect */
+.waves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  line-height: 1;
+  z-index: 0;
+}
+
+/* ---------------------- */
+/* JUMP ANIMATIONS        */
+/* ---------------------- */
+
+/* Standard Jump Animation - Makes elements move up and down */
+.jump {
+  -webkit-animation: jumpAni 7s linear infinite;
+  animation: jumpAni 7s linear infinite;
+}
+
+@-webkit-keyframes jumpAni {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-30px);
+    transform: translateY(-30px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes jumpAni {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-30px);
+    transform: translateY(-30px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+/* Reverse Jump Animation - Makes elements move down and up */
+.jump-reverse {
+  -webkit-animation: jumpReverseAni 7s linear infinite;
+  animation: jumpReverseAni 7s linear infinite;
+}
+
+@-webkit-keyframes jumpReverseAni {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(30px);
+    transform: translateY(30px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes jumpReverseAni {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(30px);
+    transform: translateY(30px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+/* Jump Small - More subtle up and down animation */
+.jump-small {
+  -webkit-animation: jumpSmallAni 5s ease-in-out infinite;
+  animation: jumpSmallAni 5s ease-in-out infinite;
+}
+
+@keyframes jumpSmallAni {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Jump Fast - Quicker animation for more energetic elements */
+.jump-fast {
+  -webkit-animation: jumpAni 3s linear infinite;
+  animation: jumpAni 3s linear infinite;
+}
+
+/* Jump Slow - More relaxed animation for subtle movement */
+.jump-slow {
+  -webkit-animation: jumpAni 10s linear infinite;
+  animation: jumpAni 10s linear infinite;
+}
+
+/* Why Choose Us section specific styles */
+.about .why-choose-us-wave-container {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.03); /* Slightly darker background to enhance wave visibility */
+}
+
+.about .waves {
+  opacity: 0.8; /* Increased opacity from 0.6 */
+  z-index: 0; /* Ensure it's behind content but visible */
+}
+
+/* Responsive adjustments for waves in why choose us section */
+@media (max-width: 991px) {
+  .why-choose-us-wave-container .waves {
+    height: 30%; /* Reduced to make it appear higher */
+    top: 0; /* Positioned at the very top */
+    bottom: auto;
+  }
+}
+
+/* Remove cursor change on hover for blog section post boxes */
+.blog .posts-grid .post-box .post-summary .post-text h2.post-title:hover,
+.blog .posts-grid .post-box .post-summary .post-text:hover,
+.blog .posts-grid .post-box .post-summary:hover,
+.blog .posts-grid .post-box:hover .post-summary,
+.blog .posts-grid .post-box:hover .post-summary *,
+.blog .posts-grid .post-box .post-summary .post-title:hover {
+  cursor: default !important;
+}
+
+/* Remove cursor change on hover for industries section industry boxes */
+.industries .posts-grid .industry-box .industry-summary .industry-text h2.industry-title:hover,
+.industries .posts-grid .industry-box .industry-summary .industry-text:hover,
+.industries .posts-grid .industry-box .industry-summary:hover,
+.industries .posts-grid .industry-box:hover .industry-summary,
+.industries .posts-grid .industry-box:hover .industry-summary *,
+.industries .posts-grid .industry-box .industry-summary .industry-title:hover {
+  cursor: default !important;
+}
+
+/* Pulsating Animation */
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* Scale Pulse Animation */
+@keyframes scale-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Additional Wave Container Styling */
+.why-choose-us-wave-container .img-area {
+  position: relative;
+  z-index: 2;
+}
+
+.why-choose-us-wave-container .img-area .image {
+  position: relative;
+  z-index: 2;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.why-choose-us-wave-container .img-area .image img {
+  max-width: 100%;
+  height: auto;
+  transform: scale(1);
+  transition: transform 0.5s ease;
+  will-change: transform;
+  z-index: 2;
+}
+
+/* Tablet Responsive Adjustments */
+@media (min-width: 768px) and (max-width: 991px) {
+  .page-hero {
+    min-height: 400px;
+    padding-top: 120px;
+  }
+  
+  .hero-text-area {
+    padding-bottom: 60px;
+  }
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 767px) {
+  .page-hero {
+    min-height: 360px;
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+  
+  .hero-text-area {
+    padding-bottom: 40px;
+  }
+  
+  .hero-social-icons.mb-3 {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .pre-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .mobile-copyright-fix {
+    padding-bottom: 70px;
+  }
+  
+  .copyrights .credits {
+    padding-bottom: 70px;
+  }
+}
+
+/* Form Error Message */
+.error-msg {
+  color: #fc0000;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none;
+}
+
+/* Form Invalid Input Styling */
+.text-input.is-invalid {
+  border-color: #fc0000;
+}
+
+/* Success Message Display */
+.done-msg.show {
+  display: block;
+}
+
+/* ===== Styles from custom-overrides.css ===== */
+/* Create a new stacking context for the entire page */
+html {
+  overflow-x: hidden;
+}
+
+/* Main content container */
+section, footer, header {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix for services CTA button - minimal styling to ensure proper positioning only */
+#services .sec-heading {
+  position: relative !important;
+}
+
+/* Fixed navigation elements need to be above all content with maximum possible z-index */
+#back-to-top, 
+.back-to-top,
+.back-to-top-right {
+  /* Use fixed position for absolute placement on screen */
+  position: fixed !important;
+  
+  /* Use largest possible z-index to guarantee visibility */
+  z-index: 2147483647 !important; /* Maximum possible z-index value */
+  
+  /* Basic styling */
+  width: 3rem !important;
+  height: 3rem !important;
+  background-color: #09aff4 !important; /* Accent blue color */
+  color: white !important;
+  border-radius: 0.25rem !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-shadow: 0px 3px 15px 0px rgba(0, 0, 0, 0.25) !important;
+  text-decoration: none !important;
+  transform: none !important; /* Prevent any transform effects from causing stacking issues */
+  transition: opacity 0.3s ease, visibility 0.3s ease !important; /* Simplify transitions */
+  will-change: opacity, visibility !important; /* Optimize for hardware acceleration */
+}
+
+/* The back-to-top-link class should not have the same styling as back-to-top buttons */
+.back-to-top-link {
+  position: relative !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Ensure the logo in the footer is visible */
+.footer-logo .logo-img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 240px !important;
+  height: auto !important;
+}
+
+/* Left button (showing on scroll) */
+#back-to-top, 
+.back-to-top {
+  bottom: 30px !important;
+  left: 20px !important;
+  right: auto !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Show the button when the 'show' class is applied */
+#back-to-top.show, 
+.back-to-top.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Right button (always visible) */
+.back-to-top-right {
+  bottom: 30px !important;
+  right: 20px !important;
+  left: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Hover effect */
+#back-to-top:hover, 
+.back-to-top:hover,
+.back-to-top-right:hover {
+  background-color: rgba(9, 175, 244, 0.8) !important;
+}
+
+/* Icon styling */
+#back-to-top i, 
+.back-to-top i,
+.back-to-top-right i {
+  font-size: 1.25rem !important;
+  display: flex !important;
+}
+
+/* Specifically fix the wave container to prevent it from affecting fixed elements */
+.why-choose-us-wave-container .waves {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important; /* Keep behind content */
+  pointer-events: none !important; /* Allow clicking through */
+  overflow: hidden !important;
+}
+
+/* Fix for the portfolio section */
+.portfolio * {
+  z-index: auto !important;
+}
+
+/* Fix for parallax images in portfolio section */
+.portfolio .parallax-img,
+.portfolio .simple-parallax,
+.portfolio .simple-parallax img {
+  z-index: 0 !important;
+  transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Fix for the wave effect - hide on mobile */
+@media (max-width: 767px) {
+  .why-choose-us-wave-container .waves {
+    display: none !important;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  /* Hide back-to-top button on mobile */
+  #back-to-top,
+  .back-to-top {
+    display: none !important;
+  }
+  
+  /* Standardize section spacing on mobile */
+  .mega-section {
+    padding: 40px 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Add consistent space between all sections */
+  section + section {
+    margin-top: 0 !important;
+  }
+
+  /* Fix spacing for CTA buttons in mobile view for services and industries sections */
+  #services .sec-heading .cta-area,
+  #industries .sec-heading .cta-area {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+  
+  /* Make the CTA button container full width on mobile for services and industries */
+  #services .sec-heading div[style*="display: flex"],
+  #industries .sec-heading div[style*="display: flex"] {
+    flex-direction: column !important;
+  }
+  
+  /* Reset the auto margins that push items to sides on desktop */
+  #services .sec-heading h2[style*="margin-right: auto"],
+  #industries .sec-heading h2[style*="margin-right: auto"],
+  #services .sec-heading .cta-area[style*="margin-left: auto"],
+  #industries .sec-heading .cta-area[style*="margin-left: auto"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .back-to-top-right {
+    right: 15px !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    bottom: 75px !important;
+  }
+  
+  /* Position chatbot icon higher on mobile */
+  #chat-container {
+    bottom: 65px !important;
+  }
+  
+  /* Remove spacing at the bottom of the page for mobile footer */
+  .page-footer .copyrights {
+    padding-bottom: 0 !important;
+    padding-top: 10px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Adjust copyright text for mobile */
+  .page-footer .credits {
+    margin-bottom: 0 !important;
+    padding-bottom: 5px !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Fix mobile footer text */
+  footer.page-footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Ensure consistent font size in footer links */
+  .page-footer .credits a {
+    font-size: inherit !important;
+    line-height: inherit !important;
+    font-weight: inherit !important;
+  }
+}
+
+@media (max-width: 575px) {
+  #back-to-top.show,
+  .back-to-top.show,
+  .back-to-top-right {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+}
+
+/* Clear any potential issues with transforms in problematic sections */
+.portfolio *,
+.why-choose-us-wave-container * {
+  backface-visibility: visible !important;
+  perspective: none !important;
+}
+
+/* Fix for any overflow issues in sections that might affect fixed positioning */
+section {
+  overflow: visible !important; /* Prevent sections from creating stacking contexts that hide fixed elements */
+}
+
+/* Fix for footer logo visibility */
+.footer-logo .logo-img {
+  display: block !important;
+  opacity: 1 !important;
+}
