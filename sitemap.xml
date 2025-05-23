@@ -3,25 +3,20 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- Homepage -->
   <url>
-    <loc>https://aaa.city/</loc>
-    <lastmod>2023-09-01</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.aaa-city.com/</loc>
+    <lastmod>2025-05-23</lastmod> <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Legal Pages -->
+
   <url>
-    <loc>https://aaa.city/terms-conditions.html</loc>
-    <lastmod>2023-09-01</lastmod>
-    <changefreq>yearly</changefreq>
+    <loc>https://www.aaa-city.com/terms-conditions.html</loc>
+    <lastmod>2025-05-23</lastmod> <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://aaa.city/privacy-policy.html</loc>
-    <lastmod>2023-09-01</lastmod>
-    <changefreq>yearly</changefreq>
+    <loc>https://www.aaa-city.com/privacy-policy.html</loc>
+    <lastmod>2025-05-23</lastmod> <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-</urlset> 
+</urlset>
