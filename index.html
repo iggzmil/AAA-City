@@ -228,6 +228,23 @@
     <!-- reCAPTCHA v2 -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+    <!-- Force accent color background on reCAPTCHA -->
+    <style>
+      .g-recaptcha,
+      .g-recaptcha iframe,
+      .g-recaptcha div,
+      .grecaptcha-badge,
+      iframe[src*="google.com/recaptcha"],
+      iframe[title="reCAPTCHA"] {
+        background-color: #0d1857 !important;
+      }
+
+      /* Target the reCAPTCHA iframe directly */
+      iframe[src*="google.com/recaptcha"] {
+        filter: invert(92%) hue-rotate(180deg) brightness(80%) contrast(90%);
+      }
+    </style>
+
 
   </head>
   <body class=" dark-theme ">

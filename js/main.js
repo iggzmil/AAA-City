@@ -106,7 +106,7 @@ $(function () {
     setTimeout(function() {
       const recaptchaIframe = document.querySelector('.g-recaptcha iframe');
       if (recaptchaIframe) {
-        recaptchaIframe.style.backgroundColor = '#111';
+        recaptchaIframe.style.backgroundColor = '#0d1857'; // Site accent color
       }
     }, 1000);
   } else {
@@ -116,7 +116,7 @@ $(function () {
         if (typeof grecaptcha !== 'undefined') {
           const recaptchaIframe = document.querySelector('.g-recaptcha iframe');
           if (recaptchaIframe) {
-            recaptchaIframe.style.backgroundColor = '#111';
+            recaptchaIframe.style.backgroundColor = '#0d1857'; // Site accent color
           }
         }
       }, 1500);
