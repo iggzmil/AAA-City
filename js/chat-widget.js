@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .tde-chat-container {
         bottom: 65px !important;
       }
-      
+
       /* Hide chat bubble on mobile devices */
       .tde-chat-bubble {
         display: none !important;
@@ -393,27 +393,27 @@ document.addEventListener('DOMContentLoaded', function() {
   fontLink.rel = 'stylesheet';
   fontLink.href = 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap';
   shadowRoot.appendChild(fontLink);
-  
+
   // Import Flaticon font to use in Shadow DOM
   const flaticonLink = document.createElement('link');
   flaticonLink.rel = 'stylesheet';
-  flaticonLink.href = 'css/vendors/flaticon.css';
+  flaticonLink.href = 'webfonts/vendors/flaticon/flaticon_aaa_city_website.css';
   shadowRoot.appendChild(flaticonLink);
 
   // Get reference to message container
   const messagesContainer = expandedView.querySelector('.tde-chat-messages');
-  
+
   // Track session state
   let isProcessing = false;
   let loadingIndicator = null;
   let messageHistory = [];
   const sessionId = `${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`;
   let isFirstMessage = true;
-  
+
   // Add initial messages
   addMessage("👋 Hi there! I'm the AAA City AI assistant.", 'bot');
   addMessage("How can I help you with automation today? Feel free to ask questions about our services or capabilities.", 'bot');
-  
+
   // Show bubble with delay
   setTimeout(() => {
     chatBubble.classList.add('show');
@@ -423,12 +423,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function toggle() {
     console.log('Toggle function called');
     console.log('Current state:', chatWidgetRoot.classList.contains('minimized') ? 'minimized' : 'expanded');
-    
+
     if (chatWidgetRoot.classList.contains('minimized')) {
       // Expanding
       console.log('Expanding chat widget');
       chatWidgetRoot.classList.remove('minimized');
-      
+
       // Focus input field when expanded
       setTimeout(() => {
         const inputElem = expandedView.querySelector('.tde-chat-input');
@@ -436,14 +436,14 @@ document.addEventListener('DOMContentLoaded', function() {
           inputElem.focus();
         }
       }, 300);
-      
+
       // Hide bubble
       chatBubble.style.display = 'none';
     } else {
       // Minimizing
       console.log('Minimizing chat widget');
       chatWidgetRoot.classList.add('minimized');
-      
+
       // Show the bubble again when minimizing
       setTimeout(() => {
         chatBubble.style.display = 'block';
@@ -457,10 +457,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageElem = document.createElement('div');
     messageElem.className = `tde-chat-message ${sender}`;
     messageElem.textContent = text;
-    
+
     messagesContainer.appendChild(messageElem);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
+
     // Save the message to history
     messageHistory.push({ text, sender, timestamp: new Date().getTime() });
   }
@@ -468,11 +468,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Create loading indicator
   function createLoadingIndicator() {
     if (loadingIndicator) return;
-    
+
     loadingIndicator = document.createElement('div');
     loadingIndicator.className = 'tde-chat-loading';
     loadingIndicator.innerHTML = `<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-    
+
     messagesContainer.appendChild(loadingIndicator);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
@@ -480,18 +480,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // Show/hide processing state
   function setProcessingState(processing) {
     isProcessing = processing;
-    
+
     if (processing) {
       chatWidgetRoot.classList.add('processing');
       createLoadingIndicator();
     } else {
       chatWidgetRoot.classList.remove('processing');
-      
+
       if (loadingIndicator) {
         messagesContainer.removeChild(loadingIndicator);
         loadingIndicator = null;
       }
-      
+
       // Re-focus the input field
       const inputElem = expandedView.querySelector('.tde-chat-input');
       if (inputElem) {
@@ -503,20 +503,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Get fallback response when webhook fails
   function getFallbackResponse(message) {
     const lowerMessage = message.toLowerCase();
-    
+
     // Check for specific keywords
     if (lowerMessage.includes('help')) {
       return "I'd be happy to help! You can ask me about our automation services, web development, or how we can help streamline your business processes. If you need immediate assistance, please email us at info@aaa-city.com.";
     }
-    
+
     if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
       return "Our pricing varies depending on the specific services and solution complexity. For a personalized quote, we recommend contacting our team who can assess your needs and provide detailed pricing information.";
     }
-    
+
     if (lowerMessage.includes('services') || lowerMessage.includes('offer')) {
       return "We offer a range of automation services including web development with automation, AI chatbots, virtual assistants, document processing, and custom workflow automation. Would you like more information about a specific service?";
     }
-    
+
     // Default fallback response
     return "I'm sorry, I'm having trouble connecting right now. Please try again later or contact us directly at info@aaa-city.com.";
   }
@@ -525,58 +525,104 @@ document.addEventListener('DOMContentLoaded', function() {
   async function processUserMessage(message) {
     try {
       setProcessingState(true);
-      
-      // Build the payload
+
+      // Set a timeout to handle cases where the webhook doesn't respond
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout: The chat service did not respond in time.')), 15000);
+      });
+
+      // Build the payload - using the format from DKDS_Sample
       const payload = {
         sessionId: sessionId,
-        message,
-        action: 'sendMessage',
-        isFirstMessage: isFirstMessage,
-        metadata: {
-          userAgent: navigator.userAgent,
-          timestamp: new Date().toISOString(),
-          url: window.location.href,
-          referrer: document.referrer,
-          source: 'website',
-          page: window.location.pathname.split('/').pop().split('.')[0] || 'home'
-        }
+        chatInput: message,
+        isNewSession: isFirstMessage
       };
-      
-      // Send to webhook
-      const response = await fetch('https://n8n.aaa-city.com/webhook/308218cd-67c4-41b1-a6d9-44c64924decb/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Webhook response not OK: ${response.status}`);
+
+      console.log('Sending payload to N8N:', payload);
+
+      // After sending, mark this as no longer the first message
+      if (isFirstMessage) {
+        console.log('First message in session - isNewSession=true');
+        isFirstMessage = false;
       }
-      
-      // Parse response
-      let responseData;
+
+      // Send to webhook - using the new webhook URL
+      let response;
+      let data;
+
       try {
-        const responseText = await response.text();
-        responseData = JSON.parse(responseText);
-      } catch (e) {
-        throw new Error('Failed to parse response');
+        // Use the new webhook URL
+        response = await Promise.race([
+          fetch('https://n8n.aaa-city.com/webhook/d1a1f309-888c-4b4b-96fe-be3cffb92283/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          }),
+          timeoutPromise
+        ]);
+
+        if (!response.ok) {
+          let errorMessage = '';
+          try {
+            const errorText = await response.text();
+            errorMessage = JSON.parse(errorText).message;
+          } catch (e) {
+            errorMessage = `Server error: ${response.status}`;
+          }
+          throw new Error(errorMessage);
+        }
+
+        data = await response.json();
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        throw new Error('Failed to connect to chat service. Please try again later.');
       }
-      
-      // Add the response to the chat
-      if (responseData && (responseData.message || responseData.output)) {
-        addMessage(responseData.message || responseData.output, 'bot');
+
+      // Log the response for debugging
+      console.log('Response from N8N:', data);
+
+      // Handle N8N Chat Trigger response format
+      if (data && data.output) {
+        addMessage(data.output, 'bot');
+      } else if (data && data.message) {
+        addMessage(data.message, 'bot');
+      } else if (data && data.response) {
+        addMessage(data.response, 'bot');
+      } else if (data && data.error) {
+        console.error("Error from N8N:", data.error);
+        addMessage("Sorry, I encountered an error. Please try again.", 'bot');
       } else {
-        addMessage(getFallbackResponse(message), 'bot');
+        // If we get here, we either have an empty response or an unexpected format
+        console.warn("Unexpected or empty response format from N8N:", data);
+
+        // Use the fallback response generator
+        const fallbackResponse = getFallbackResponse(message);
+        addMessage(fallbackResponse, 'bot');
       }
     } catch (error) {
-      console.error('Error processing message:', error);
-      addMessage(getFallbackResponse(message), 'bot');
+      console.error('Chat widget error:', error);
+
+      // For N8N specific errors, provide more helpful messages
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        console.error('N8N webhook connection error - the server might be down or unreachable');
+        addMessage("I'm having trouble connecting to my knowledge base. This might be a temporary issue. Please try again in a few moments or contact us directly at info@aaa-city.com.", 'bot');
+        return;
+      }
+
+      // Handle timeout errors gracefully
+      if (error.message.includes('timeout') || error.message.includes('timed out')) {
+        console.error('N8N webhook timeout error - the server is taking too long to respond');
+        addMessage("I'm sorry, the chat service is taking too long to respond. Please try again later or contact us directly at info@aaa-city.com.", 'bot');
+        return;
+      }
+
+      // Use fallback responses for other errors
+      const fallbackResponse = getFallbackResponse(message);
+      addMessage(fallbackResponse, 'bot');
     } finally {
       setProcessingState(false);
-      isFirstMessage = false;
     }
   }
 
@@ -584,17 +630,17 @@ document.addEventListener('DOMContentLoaded', function() {
   function sendMessage() {
     const inputElem = expandedView.querySelector('.tde-chat-input');
     const message = inputElem.value.trim();
-    
+
     if (message && !isProcessing) {
       // Add user message to chat
       addMessage(message, 'user');
-      
+
       // Clear input
       inputElem.value = '';
-      
+
       // Process the message
       processUserMessage(message);
-      
+
       // Return focus to input field
       inputElem.focus();
     }
@@ -608,18 +654,18 @@ document.addEventListener('DOMContentLoaded', function() {
     e.stopPropagation();
     toggle();
   });
-  
+
   // Close button click
   const closeBtn = expandedView.querySelector('.tde-chat-close-btn');
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     toggle();
   });
-  
+
   // Send button click
   const sendBtn = expandedView.querySelector('.tde-chat-send');
   sendBtn.addEventListener('click', sendMessage);
-  
+
   // Input Enter key
   const inputElem = expandedView.querySelector('.tde-chat-input');
   inputElem.addEventListener('keypress', (e) => {
@@ -639,4 +685,4 @@ document.addEventListener('DOMContentLoaded', function() {
     addMessage,
     processUserMessage
   };
-}); 
+});
