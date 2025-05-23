@@ -2117,7 +2117,7 @@ i.flaticon-instagram.sc-icon {
   display: block;
 }
 
-/* reCAPTCHA Styling */
+/* Basic reCAPTCHA Layout */
 .recaptcha-submit-container {
   display: flex;
   flex-wrap: wrap;
@@ -2134,55 +2134,7 @@ i.flaticon-instagram.sc-icon {
   margin-top: 5px;
 }
 
-/* Custom styling for reCAPTCHA to blend with dark theme */
-.recaptcha-dark {
-  position: relative;
-  display: inline-block;
-  border-radius: 4px;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-}
 
-/* Dark theme specific styles - using site accent color */
-.recaptcha-dark iframe {
-  filter: invert(92%) hue-rotate(180deg) brightness(80%) contrast(90%);
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
-  background-color: #0d1857 !important; /* Site accent color */
-}
-
-/* Add hover effect */
-.recaptcha-dark:hover iframe {
-  border-color: rgba(9, 175, 244, 0.4);
-  box-shadow: 0 4px 12px rgba(9, 175, 244, 0.2);
-}
-
-/* Add accent color border */
-.recaptcha-dark::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(9, 175, 244, 0.7), transparent);
-  z-index: 1;
-}
-
-/* Force accent color background on reCAPTCHA elements */
-.g-recaptcha,
-.g-recaptcha iframe,
-.g-recaptcha div,
-.g-recaptcha > div > div,
-.grecaptcha-badge,
-.grecaptcha-logo,
-.g-recaptcha-response,
-iframe[src*="google.com/recaptcha"],
-iframe[title="reCAPTCHA"] {
-  background-color: #0d1857 !important; /* Site accent color */
-}
 
 /* Mobile adjustments for reCAPTCHA */
 @media (max-width: 576px) {

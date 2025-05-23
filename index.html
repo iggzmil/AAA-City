@@ -228,23 +228,6 @@
     <!-- reCAPTCHA v2 -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    <!-- Force accent color background on reCAPTCHA -->
-    <style>
-      .g-recaptcha,
-      .g-recaptcha iframe,
-      .g-recaptcha div,
-      .grecaptcha-badge,
-      iframe[src*="google.com/recaptcha"],
-      iframe[title="reCAPTCHA"] {
-        background-color: #0d1857 !important;
-      }
-
-      /* Target the reCAPTCHA iframe directly */
-      iframe[src*="google.com/recaptcha"] {
-        filter: invert(92%) hue-rotate(180deg) brightness(80%) contrast(90%);
-      }
-    </style>
-
 
   </head>
   <body class=" dark-theme ">
@@ -252,7 +235,6 @@
 
     <header role="banner">
     <section class="page-hero d-flex" id="page-hero" data-section="hero">
-      <div class="overlay-photo-image-bg" data-bg-img="images/pattern-bg-2.jpg" data-bg-opacity=".2"></div>
       <div class="section-dotted-bg"></div>
       <div class="animated-lines"><span class="animated-line line-1"></span><span class="animated-line line-2"></span><span class="animated-line line-3"></span><span class="animated-line line-4"></span><span class="animated-line line-5"></span><span class="animated-line line-6"></span><span class="animated-line line-7"></span><span class="animated-line line-8"></span><span class="animated-line line-9"></span></div>
       <div class="container">
@@ -925,7 +907,7 @@
                             <div class="col-12 submit-wrapper">
                               <div class="recaptcha-submit-container">
                                 <button class="btn-solid" id="submit-btn" type="submit" name="UserSubmit">Send your message</button>
-                                <div class="g-recaptcha recaptcha-dark" data-sitekey="6LeSekYrAAAAABi8ENisugRcUt2f5E3uXBnd8xGU" data-theme="dark"></div>
+                                <div class="g-recaptcha" data-sitekey="6LeSekYrAAAAABi8ENisugRcUt2f5E3uXBnd8xGU" data-theme="dark"></div>
                               </div>
                               <div class="recaptcha-error-msg error-msg"></div>
                             </div>
