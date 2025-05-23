@@ -1,4 +1,171 @@
 /* Source: bootstrap.min.css */
+
+/* Inline styles moved from index.html */
+header[role="banner"] {
+  margin: 0;
+  padding: 0;
+}
+
+/* Logo styles */
+.logo-wrapper img {
+  max-width: 150px;
+  vertical-align: middle;
+}
+
+/* Section heading styles */
+.sec-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sec-heading .content-area {
+  flex: 1;
+}
+
+.sec-heading .content-area > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.sec-heading .title {
+  margin-right: auto;
+}
+
+.sec-heading .cta-area {
+  margin-left: auto;
+}
+
+/* Footer link styles */
+.footer-links a {
+  color: #00c7f4;
+  text-decoration: none;
+}
+body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+.page-hero {
+  min-height: 100vh;
+  padding: 100px 0;
+  align-items: center;
+}
+
+.hero-row {
+  align-items: center;
+}
+
+.hero-text-area {
+  margin-top: 2.5rem;
+}
+
+.hero-social-icons {
+  margin-bottom: 1rem;
+}
+
+.hero-cta-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (orientation: portrait) {
+  .page-hero {
+    padding-top: 0 !important;
+    min-height: auto !important;
+    padding-bottom: 60px;
+    align-items: flex-start !important;
+  }
+
+  .hero-row {
+    align-items: flex-start !important;
+  }
+
+  .hero-text-area {
+    margin-top: 0 !important;
+  }
+
+  .hero-social-icons {
+    padding-top: 15px;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-img-wraper img {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .industry-img-wrapper {
+    height: auto !important;
+    max-height: 250px;
+    overflow: hidden;
+  }
+
+  .portfolio-img {
+    height: auto !important;
+  }
+
+  .page-hero {
+    padding-bottom: 30px !important;
+  }
+
+  @media (orientation: portrait) {
+    .page-hero {
+      padding-top: 0 !important;
+    }
+
+    .hero-social-icons {
+      padding-top: 10px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .page-hero .cta-links-area .cta-btn {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.9rem !important;
+      white-space: nowrap;
+      min-width: auto !important;
+      width: auto !important;
+      height: auto !important;
+      aspect-ratio: auto !important;
+    }
+
+    .page-hero .cta-links-area .cta-btn .icon {
+      font-size: 1.2rem !important;
+      margin-left: 0.3rem !important;
+    }
+
+    .page-hero .logo-wrapper {
+      margin-left: 0.5rem !important;
+    }
+
+    .page-hero .logo-wrapper img {
+      max-width: 120px !important;
+    }
+
+    .hero-cta-container {
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+  }
+}
 @charset "UTF-8";/*!
  * Bootstrap  v5.3.5 (https://getbootstrap.com/)
  * Copyright 2011-2025 The Bootstrap Authors

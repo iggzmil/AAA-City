@@ -32,7 +32,7 @@ $(function () {
     // Force the back-to-top buttons to stay at top z-index
     const backToTopBtn = document.getElementById('back-to-top');
     const backToTopRightBtn = document.getElementById('back-to-top-right');
-    
+
     if (backToTopBtn) {
       // Move to body to avoid any stacking context issues
       if (backToTopBtn.parentElement !== document.body) {
@@ -40,7 +40,7 @@ $(function () {
       }
       backToTopBtn.style.zIndex = "2147483647";
     }
-    
+
     if (backToTopRightBtn) {
       // Move to body to avoid any stacking context issues
       if (backToTopRightBtn.parentElement !== document.body) {
@@ -75,12 +75,12 @@ $(function () {
     // Load animation scripts
     setTimeout(function() {
       loadScript('js/image-circle-effect.js');
-      
+
       // Load wave.js and initialize wave effect after the script is loaded
       loadScript('js/wave.js', function() {
         // Check if we're on desktop (screen width > 767px)
         const isMobile = window.innerWidth <= 767;
-        
+
         // Initialize the wave effect for the Why Choose Us section only on desktop
         if (!isMobile && document.getElementById('why-choose-us-waves')) {
           const whyChooseUsWave = WaveEffect('#why-choose-us-waves', {
@@ -153,7 +153,7 @@ $(function () {
   // Simple scroll handler with no special tricks
   main_window.on("scroll", function () {
     const scrollPosition = $(this).scrollTop();
-    
+
     // Just show/hide the back to top button based on scroll position
     if (scrollPosition > 300) {
       toTopBtn.addClass("show");
@@ -183,7 +183,7 @@ $(function () {
   const bg_img = $("*");
   bg_img.each(function () {
     if ($(this).attr("data-bg-img")) {
-      $(this).css("background-image", `url(%24%7b%24(this.html).attr("data-bg-img")}`);
+      $(this).css("background-image", `url(${$(this).attr("data-bg-img")})`);
     }
     if ($(this).attr("data-bg-opacity")) {
       $(this).css("opacity", `${$(this).attr("data-bg-opacity")}`);
@@ -228,14 +228,14 @@ $(function () {
   // Function to check if an element is in viewport
   function isInViewport(element) {
     if (element.length === 0) return false;
-    
+
     const rect = element[0].getBoundingClientRect();
     return (
       rect.top <= window.innerHeight &&
       rect.bottom >= 0
     );
   }
-  
+
   // End Smooth Scrolling To Window Top When Clicking on Back To Top Button
 
   /*************Start Contact Form Functionality************/
@@ -290,11 +290,11 @@ $(function () {
   /* ----------------------------------
     End Vendors plugins options Area
      ---------------------------------- */
-     
+
   /* ----------------------------------
     Start Contact Form Validation
      ---------------------------------- */
-  
+
   // Contact Form Validation
   if (contactForm) {
     // Get form elements
@@ -304,7 +304,7 @@ $(function () {
     const messageInput = document.getElementById('msg-text');
     const submitBtn = document.getElementById('submit-btn');
     const allInputs = [nameInput, emailInput, subjectInput, messageInput];
-    
+
     // Show styled validation message
     function showError(input, message) {
         const errorMsgSpan = input.parentElement.querySelector('.error-msg');
@@ -312,7 +312,7 @@ $(function () {
         errorMsgSpan.style.display = 'block';
         input.classList.add('is-invalid');
     }
-    
+
     // Clear error message
     function clearError(input) {
         const errorMsgSpan = input.parentElement.querySelector('.error-msg');
@@ -320,7 +320,7 @@ $(function () {
         errorMsgSpan.style.display = 'none';
         input.classList.remove('is-invalid');
     }
-    
+
     // Validate name field (letters, spaces, hyphens, apostrophes)
     function validateName(input) {
         const value = input.value.trim();
@@ -341,7 +341,7 @@ $(function () {
             return true;
         }
     }
-    
+
     // Validate email field
     function validateEmail(input) {
         const value = input.value.trim();
@@ -356,7 +356,7 @@ $(function () {
             return true;
         }
     }
-    
+
     // Validate company/subject field
     function validateSubject(input) {
         const value = input.value.trim();
@@ -374,7 +374,7 @@ $(function () {
             return true;
         }
     }
-    
+
     // Validate message field
     function validateMessage(input) {
         const value = input.value.trim();
@@ -392,34 +392,34 @@ $(function () {
             return true;
         }
     }
-    
+
     // Validate all form fields
     function validateForm() {
         const isNameValid = validateName(nameInput);
         const isEmailValid = validateEmail(emailInput);
         const isSubjectValid = validateSubject(subjectInput);
         const isMessageValid = validateMessage(messageInput);
-        
+
         return isNameValid && isEmailValid && isSubjectValid && isMessageValid;
     }
-    
+
     // Add input event listeners for real-time validation
     nameInput.addEventListener('input', function() {
         validateName(this);
     });
-    
+
     emailInput.addEventListener('input', function() {
         validateEmail(this);
     });
-    
+
     subjectInput.addEventListener('input', function() {
         validateSubject(this);
     });
-    
+
     messageInput.addEventListener('input', function() {
         validateMessage(this);
     });
-    
+
     // Add blur event listeners for validation when leaving a field
     allInputs.forEach(input => {
         input.addEventListener('blur', function() {
@@ -435,14 +435,14 @@ $(function () {
             }
         });
     });
-    
+
     // Form submission with enhanced validation
     contactForm.addEventListener('submit', function(e) {
       e.preventDefault(); // Always prevent default form submission
-      
+
       // First validate all fields
       const isValid = validateForm();
-      
+
       if (!isValid) {
           // Focus the first input with an error
           const firstInvalidInput = document.querySelector('.is-invalid');
@@ -451,21 +451,21 @@ $(function () {
           }
           return false;
       }
-      
+
       // Show loading state
       submitBtn.disabled = true;
       const originalButtonText = submitBtn.innerHTML;
       submitBtn.innerHTML = 'Sending...';
-      
+
       // Create FormData
       const formData = new FormData(contactForm);
-      
+
       // Log the form data being sent (for debugging)
       console.log('Sending form data to:', contactForm.action);
       for (let pair of formData.entries()) {
           console.log(pair[0] + ': ' + pair[1]);
       }
-      
+
       // Use AJAX to submit the form
       fetch(contactForm.action, {
           method: 'POST',
@@ -478,14 +478,14 @@ $(function () {
       })
       .then(response => {
           console.log('Server response status:', response.status);
-          
+
           if (!response.ok) {
               if (response.status === 405) {
                   throw new Error('Method Not Allowed (405): The server does not allow POST requests to this endpoint. Please check server configuration.');
               }
               throw new Error(`Server responded with status: ${response.status}`);
           }
-          
+
           // First try to get response as text
           return response.text().then(text => {
               try {
@@ -506,7 +506,7 @@ $(function () {
           // Reset button state
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalButtonText;
-          
+
           // Handle the response
           handleFormSubmissionResponse(data);
       })
@@ -514,13 +514,13 @@ $(function () {
           // Reset button state
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalButtonText;
-          
+
           // Show error message
           alert('Error: ' + error.message);
           console.error('Form submission error:', error);
       });
     });
-    
+
     // Handle successful form submission response
     function handleFormSubmissionResponse(response) {
         if (response.success) {
@@ -528,10 +528,10 @@ $(function () {
             const doneMsg = contactForm.querySelector('.done-msg');
             doneMsg.textContent = response.message;
             doneMsg.classList.add('show');
-            
+
             // Reset form
             contactForm.reset();
-            
+
             // Clear success message after delay
             setTimeout(function() {
                 doneMsg.textContent = '';
