@@ -225,7 +225,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&amp;display=swap">
     <link rel="stylesheet" href="css/main-combined.css">
-
+    <!-- reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
   </head>
@@ -905,7 +906,11 @@
                               </div>
                             </div>
                             <div class="col-12 submit-wrapper">
-                              <button class=" btn-solid" id="submit-btn" type="submit" name="UserSubmit">Send your message</button>
+                              <div class="recaptcha-submit-container">
+                                <button class="btn-solid" id="submit-btn" type="submit" name="UserSubmit">Send your message</button>
+                                <div class="g-recaptcha" data-sitekey="6LeSekYrAAAAABi8ENisugRcUt2f5E3uXBnd8xGU"></div>
+                              </div>
+                              <div class="recaptcha-error-msg error-msg"></div>
                             </div>
                           </div>
                         </form>
@@ -984,7 +989,7 @@
 
             <!--     JQuery     -->
             <script src="js/vendors/jquery-3.7.1.min.js"></script>
-            
+
             <!-- Bootstrap -->
             <script src="js/vendors/bootstrap.bundle.min.js"></script>
 

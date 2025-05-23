@@ -393,14 +393,31 @@ $(function () {
         }
     }
 
+    // Validate reCAPTCHA
+    function validateReCaptcha() {
+        const recaptchaResponse = grecaptcha.getResponse();
+        const recaptchaErrorMsg = document.querySelector('.recaptcha-error-msg');
+
+        if (!recaptchaResponse) {
+            recaptchaErrorMsg.textContent = 'Please complete the reCAPTCHA verification';
+            recaptchaErrorMsg.style.display = 'block';
+            return false;
+        } else {
+            recaptchaErrorMsg.textContent = '';
+            recaptchaErrorMsg.style.display = 'none';
+            return true;
+        }
+    }
+
     // Validate all form fields
     function validateForm() {
         const isNameValid = validateName(nameInput);
         const isEmailValid = validateEmail(emailInput);
         const isSubjectValid = validateSubject(subjectInput);
         const isMessageValid = validateMessage(messageInput);
+        const isRecaptchaValid = validateReCaptcha();
 
-        return isNameValid && isEmailValid && isSubjectValid && isMessageValid;
+        return isNameValid && isEmailValid && isSubjectValid && isMessageValid && isRecaptchaValid;
     }
 
     // Add input event listeners for real-time validation
@@ -459,6 +476,9 @@ $(function () {
 
       // Create FormData
       const formData = new FormData(contactForm);
+
+      // Add reCAPTCHA response to form data
+      formData.append('g-recaptcha-response', grecaptcha.getResponse());
 
       // Log the form data being sent (for debugging)
       console.log('Sending form data to:', contactForm.action);
@@ -529,8 +549,9 @@ $(function () {
             doneMsg.textContent = response.message;
             doneMsg.classList.add('show');
 
-            // Reset form
+            // Reset form and reCAPTCHA
             contactForm.reset();
+            grecaptcha.reset();
 
             // Clear success message after delay
             setTimeout(function() {
