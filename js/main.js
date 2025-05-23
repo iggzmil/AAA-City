@@ -100,6 +100,29 @@ $(function () {
   // Load animation scripts after window load
   $(window).on('load', loadAnimationScripts);
 
+  // Apply custom styling to reCAPTCHA after it loads
+  if (typeof grecaptcha !== 'undefined') {
+    // Add a small delay to ensure the reCAPTCHA is fully rendered
+    setTimeout(function() {
+      const recaptchaIframe = document.querySelector('.g-recaptcha iframe');
+      if (recaptchaIframe) {
+        recaptchaIframe.style.backgroundColor = '#111';
+      }
+    }, 1000);
+  } else {
+    // If grecaptcha is not loaded yet, wait for it
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        if (typeof grecaptcha !== 'undefined') {
+          const recaptchaIframe = document.querySelector('.g-recaptcha iframe');
+          if (recaptchaIframe) {
+            recaptchaIframe.style.backgroundColor = '#111';
+          }
+        }
+      }, 1500);
+    });
+  }
+
   if ($(textInput).length) {
     let inputHasText = "has-text";
 
