@@ -1665,6 +1665,8 @@ body.dark-theme .faq .faq-accordion .card-body .faq-answer {
 
 .industries .industries-grid .industry-summary .industry-excerpt {
   margin-bottom: 0rem;
+  opacity: 0.85;
+  color: var(--clr-main-text);
 }
 
 /*
@@ -2336,5 +2338,12 @@ section {
   }
 }
 
-/* Disable input during processing */ 
+/* Disable input during processing */
+
+/* Consistent text styling for section headings */
+#industries .sec-heading .about-text,
+#services .sec-heading .about-text {
+  opacity: 0.75;
+  color: var(--clr-main-text);
+}
 
