@@ -8,4 +8,4 @@ Disallow: /wp-login.php
 Disallow: /thank-you.html
 
 # Sitemap location
-Sitemap: https://aaa.city/sitemap.xml 
+Sitemap: https://www.aaa-city.com/sitemap.xml 
