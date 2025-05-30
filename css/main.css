@@ -2083,7 +2083,7 @@ i.flaticon-instagram.sc-icon {
 }
 
 /* Mobile Responsive Adjustments */
-@media (max-width: 767px) {  .page-hero {    min-height: 300px;    padding-top: 25px;    padding-bottom: 15px;  }    .hero-text-area {    padding-bottom: 5px;  }
+@media (max-width: 767px) {  .page-hero {    min-height: 300px;        padding-bottom: 15px;  }    .hero-text-area {    padding-bottom: 5px;  }
 
   .hero-social-icons.mb-3 {
     margin-bottom: 0.5rem !important;
@@ -2547,3 +2547,145 @@ section {
   color: var(--clr-main-text);
 }
 
+/* ===========================
+   RESPONSIVE ORIENTATION FIXES 
+   FOR INDUSTRIES & PORTFOLIO
+   =========================== */
+
+/* Industries Section - Landscape Mobile Orientation Fix */
+@media (max-width: 767px) and (orientation: landscape) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 200px !important;
+    overflow: hidden;
+  }
+  
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper .industry-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  #industries.industries.industries-home .industries-grid .industry-box {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Industries Section - Portrait Mobile Orientation */
+@media (max-width: 767px) and (orientation: portrait) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 250px !important;
+    overflow: hidden;
+  }
+  
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper .industry-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Portfolio Section - Landscape Mobile Orientation Fix */
+@media (max-width: 767px) and (orientation: landscape) {
+  .portfolio .item .portfolio-img {
+    height: 180px !important;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+  }
+  
+  .portfolio .portfolio-item {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Portfolio Section - Portrait Mobile Orientation */
+@media (max-width: 767px) and (orientation: portrait) {
+  .portfolio .item .portfolio-img {
+    height: 220px !important;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+  }
+}
+
+/* Tablet Landscape Orientation - Industries */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 240px !important;
+  }
+  
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper .industry-img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Tablet Portrait Orientation - Industries */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 280px !important;
+  }
+  
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper .industry-img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Tablet Landscape Orientation - Portfolio */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .portfolio .item .portfolio-img {
+    height: 200px !important;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Tablet Portrait Orientation - Portfolio */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .portfolio .item .portfolio-img {
+    height: 250px !important;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Small Mobile Landscape Fix */
+@media (max-width: 576px) and (orientation: landscape) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 160px !important;
+  }
+  
+  .portfolio .item .portfolio-img {
+    height: 140px !important;
+  }
+  
+  /* Adjust grid for better landscape viewing */
+  #industries.industries.industries-home .industries-grid .industry-box {
+    margin-bottom: 1rem;
+  }
+  
+  .portfolio .portfolio-item {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Very Small Mobile Portrait Fix */
+@media (max-width: 576px) and (orientation: portrait) {
+  #industries.industries.industries-home .industries-grid .industry-img-wrapper {
+    height: 220px !important;
+  }
+  
+  .portfolio .item .portfolio-img {
+    height: 200px !important;
+  }
+} 
+
+/* Chat Widget - Mobile Landscape Orientation Fix */
+@media (max-width: 767px) and (orientation: landscape) {
+  .tde-chat-bubble {
+    display: none !important;
+  }
+}

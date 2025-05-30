@@ -62,9 +62,34 @@ document.addEventListener('DOMContentLoaded', function() {
         bottom: 65px !important;
       }
 
-      /* Hide chat bubble on mobile devices */
-      .tde-chat-bubble {
+      /* Hide chat bubble on mobile devices - higher specificity */
+      .tde-chat-bubble,
+      .tde-chat-bubble.show {
         display: none !important;
+      }
+    }
+
+    /* Additional landscape-specific rule for chat bubble - more specific */
+    @media (max-width: 767px) and (orientation: landscape) {
+      .tde-chat-bubble,
+      .tde-chat-bubble.show {
+        display: none !important;
+      }
+    }
+
+    /* Additional portrait-specific rule for chat bubble - more specific */
+    @media (max-width: 767px) and (orientation: portrait) {
+      .tde-chat-bubble,
+      .tde-chat-bubble.show {
+        display: none !important;
+      }
+    }
+
+    /* Mobile landscape specific adjustments for better positioning */
+    @media (max-width: 767px) and (orientation: landscape) {
+      .tde-chat-container {
+        bottom: 20px !important;
+        right: 15px !important;
       }
     }
 
