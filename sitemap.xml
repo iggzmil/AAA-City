@@ -7,16 +7,5 @@
     <loc>https://www.aaa-city.com/</loc>
     <lastmod>2025-05-23</lastmod> <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-
-  <url>
-    <loc>https://www.aaa-city.com/terms-conditions.html</loc>
-    <lastmod>2025-05-23</lastmod> <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.aaa-city.com/privacy-policy.html</loc>
-    <lastmod>2025-05-23</lastmod> <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  </url>  
 </urlset>

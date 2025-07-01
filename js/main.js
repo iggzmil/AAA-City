@@ -12,20 +12,7 @@ const main_window = $(window),
 $(function () {
   ("use strict");
 
-  // function to fire the conter plugin
-  let counterShowsUp = false;
 
-  function fireCounter() {
-    if ($(".js-stats-counter").length) {
-      if (jQuery().countTo && counterShowsUp === false) {
-        let pos = $(".js-stats-counter").offset().top;
-        if (main_window.scrollTop() + main_window.innerHeight() - 50 >= pos) {
-          $(".counter").countTo();
-          counterShowsUp = true;
-        }
-      }
-    }
-  }
 
   // Ensure buttons are positioned correctly and properly attached to the DOM
   function initBackToTopButtons() {
@@ -163,8 +150,7 @@ $(function () {
       toTopBtn.removeClass("show");
     }
 
-    // fire the counter
-    fireCounter();
+
   });
 
   // Force initial check of scroll position on page load
@@ -178,8 +164,7 @@ $(function () {
   // Ensure buttons stay properly positioned
   setInterval(initBackToTopButtons, 2000);
 
-  /* *******   initialize Counter plugin ********/
-  fireCounter();
+
 
   /* ********* set the Background Image path and opacity for elements that has the  a vlaue for data-bg-img attribute***********/
   const bg_img = $("*");
@@ -282,12 +267,7 @@ $(function () {
 
   /*************End Contact Form Functionality************/
 
-  /* *******  loading tilt.js library ********/
-  if (jQuery().tilt) {
-    $("[data-tilt]").tilt({
-      perspective: 1000,
-    });
-  }
+
 
   /* ----------------------------------
     End Vendors plugins options Area
@@ -395,18 +375,38 @@ $(function () {
         }
     }
 
-    // Validate reCAPTCHA
-    function validateReCaptcha() {
-        const recaptchaResponse = grecaptcha.getResponse();
-        const recaptchaErrorMsg = document.querySelector('.recaptcha-error-msg');
+    // Time delay anti-bot functionality
+    let formStartTime = null;
+    let delayTimer = null;
+    const MINIMUM_DELAY = 5000; // 5 seconds minimum delay
 
-        if (!recaptchaResponse) {
-            recaptchaErrorMsg.textContent = 'Please complete the reCAPTCHA verification';
-            recaptchaErrorMsg.style.display = 'block';
+    function initializeTimeDelay() {
+        formStartTime = Date.now();
+        startDelayTimer();
+    }
+
+    function startDelayTimer() {
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Enable the submit button after delay
+        delayTimer = setTimeout(() => {
+            submitBtn.disabled = false;
+        }, MINIMUM_DELAY);
+    }
+
+    function validateTimeDelay() {
+        const timeDelayErrorMsg = document.querySelector('.time-delay-error-msg');
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - formStartTime;
+
+        if (elapsedTime < MINIMUM_DELAY) {
+            const remainingTime = Math.ceil((MINIMUM_DELAY - elapsedTime) / 1000);
+            timeDelayErrorMsg.textContent = `Please wait ${remainingTime} more seconds before submitting`;
+            timeDelayErrorMsg.style.display = 'block';
             return false;
         } else {
-            recaptchaErrorMsg.textContent = '';
-            recaptchaErrorMsg.style.display = 'none';
+            timeDelayErrorMsg.textContent = '';
+            timeDelayErrorMsg.style.display = 'none';
             return true;
         }
     }
@@ -417,9 +417,9 @@ $(function () {
         const isEmailValid = validateEmail(emailInput);
         const isSubjectValid = validateSubject(subjectInput);
         const isMessageValid = validateMessage(messageInput);
-        const isRecaptchaValid = validateReCaptcha();
+        const isTimeDelayValid = validateTimeDelay();
 
-        return isNameValid && isEmailValid && isSubjectValid && isMessageValid && isRecaptchaValid;
+        return isNameValid && isEmailValid && isSubjectValid && isMessageValid && isTimeDelayValid;
     }
 
     // Add input event listeners for real-time validation
@@ -438,6 +438,9 @@ $(function () {
     messageInput.addEventListener('input', function() {
         validateMessage(this);
     });
+
+    // Initialize time delay when form is loaded
+    initializeTimeDelay();
 
     // Add blur event listeners for validation when leaving a field
     allInputs.forEach(input => {
@@ -479,8 +482,8 @@ $(function () {
       // Create FormData
       const formData = new FormData(contactForm);
 
-      // Add reCAPTCHA response to form data
-      formData.append('g-recaptcha-response', grecaptcha.getResponse());
+      // Add form start time for server-side validation
+      formData.append('form-start-time', formStartTime);
 
       // Log the form data being sent (for debugging)
       console.log('Sending form data to:', contactForm.action);
@@ -551,9 +554,9 @@ $(function () {
             doneMsg.textContent = response.message;
             doneMsg.classList.add('show');
 
-            // Reset form and reCAPTCHA
+            // Reset form and restart delay timer
             contactForm.reset();
-            grecaptcha.reset();
+            initializeTimeDelay();
 
             // Clear success message after delay
             setTimeout(function() {

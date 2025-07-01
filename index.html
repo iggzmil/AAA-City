@@ -224,10 +224,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&amp;display=swap">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/image-circle-effect.css">
+    <link rel="stylesheet" href="css/chat-widget.css">   
     <link rel="stylesheet" href="css/main.css">
     
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 
   </head>
   <body class=" dark-theme ">
@@ -586,7 +590,7 @@
           <div class="container">
             <div class="sec-heading  ">
               <div class="content-area"><span class=" pre-title       wow fadeInUp " data-wow-delay=".2s">Our Work</span>
-                <h2 class=" title    wow fadeInUp" data-wow-delay=".4s">Automation That Delivers Measurable Results</h2>
+                <h2 class=" title    wow fadeInUp" data-wow-delay=".4s">Results you can see</h2>
               </div>
             </div>
             <div class="portfolio-wrapper  ">
@@ -620,6 +624,20 @@
                       </a>
                       <div class="item-info">
                         <h4 class="item-title">DK Dental Studio</h4><i class="flaticon-next icon"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6 col-lg-4 portfolio-item mobile">
+                    <div class="item" data-subsection="portfolio-item" data-portfolio-id="2">
+                      <a class="portfolio-img-link" href="https://www.autoacoustics.au">
+                        <img class="portfolio-img img-fluid" loading="lazy" src="images/portfolio/AA.webp"
+                             alt="DK Dental Studio website portfolio"
+                             width="400" height="auto"
+                             srcset="images/portfolio/AA.webp 800w"
+                             sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 400px"/>
+                      </a>
+                      <div class="item-info">
+                        <h4 class="item-title">Auto Acoustics</h4><i class="flaticon-next icon"></i>
                       </div>
                     </div>
                   </div>
@@ -905,11 +923,10 @@
                               </div>
                             </div>
                             <div class="col-12 submit-wrapper">
-                              <div class="recaptcha-submit-container">
-                                <button class="btn-solid" id="submit-btn" type="submit" name="UserSubmit">Send your message</button>
-                                <div class="g-recaptcha" data-sitekey="6LeSekYrAAAAABi8ENisugRcUt2f5E3uXBnd8xGU" data-theme="dark"></div>
+                              <div class="submit-container">
+                                <button class="btn-solid" id="submit-btn" type="submit" name="UserSubmit" disabled>Send your message</button>
                               </div>
-                              <div class="recaptcha-error-msg error-msg"></div>
+                              <div class="time-delay-error-msg error-msg"></div>
                             </div>
                           </div>
                         </form>
@@ -964,8 +981,8 @@
               <div class="row">
                 <div class="col-12 text-center">
                   <p class="credits">
-                    &copy; Copyright 2025 AAA City. All Rights Reserved. Read our<br>
-                    <span class="footer-links"><a href="terms-conditions.html">Terms & Conditions</a>, and <a href="privacy-policy.html">Privacy Policy</a>.</span>
+                    &copy; Copyright 2025 AAA City. All Rights Reserved.
+                    
                   </p>
                 </div>
                 </div>
@@ -982,19 +999,13 @@
         <div id="chat-container" data-section="chat-widget"></div>
 
            
-            <script src="js/vendors/jquery-3.7.1.min.js"></script>
+            <script src="js/jquery-3.7.1.min.js"></script>
 
            
-            <script src="js/vendors/bootstrap.bundle.min.js"></script>
-
-                        
-            <script src="js/vendors/appear.min.js"></script>
+            <script src="js/bootstrap.bundle.min.js"></script>
 
             
-            <script src="js/vendors/wow.min.js"></script>
-
-            
-            <script src="js/vendors/vanilla-tilt.min.js"></script>
+            <script src="js/vanilla-tilt.min.js"></script>
 
            
             <script src="js/main.js"></script>

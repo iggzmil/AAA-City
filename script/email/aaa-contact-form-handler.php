@@ -29,6 +29,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// Function to validate time delay (anti-bot protection)
+function validateTimeDelay($data) {
+    $errors = [];
+    $minimumDelay = 5000; // 5 seconds in milliseconds
+
+    if (!isset($data['form-start-time']) || empty($data['form-start-time'])) {
+        $errors[] = 'Invalid form submission - security check failed';
+        return $errors;
+    }
+
+    $formStartTime = intval($data['form-start-time']);
+    $currentTime = round(microtime(true) * 1000); // Current time in milliseconds
+    $elapsedTime = $currentTime - $formStartTime;
+
+    if ($elapsedTime < $minimumDelay) {
+        $errors[] = 'Form submitted too quickly. Please wait a moment and try again.';
+    }
+
+    // Also check if the form was submitted too long ago (e.g., more than 30 minutes)
+    $maximumDelay = 30 * 60 * 1000; // 30 minutes in milliseconds
+    if ($elapsedTime > $maximumDelay) {
+        $errors[] = 'Form session expired. Please refresh the page and try again.';
+    }
+
+    return $errors;
+}
+
 // Function to validate form data
 function validateContactForm($data) {
     $errors = [];
@@ -107,21 +134,23 @@ function validateContactForm($data) {
 // Get the request data based on content type
 $requestData = [];
 
-// Log information about the request for debugging
-$debugInfo = [
-    'method' => $_SERVER['REQUEST_METHOD'],
-    'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
-    'has_post' => !empty($_POST),
-    'has_raw_input' => !empty(file_get_contents('php://input')),
-    'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
-    'php_version' => PHP_VERSION,
-    'server_vars' => [
-        'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
-        'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'unknown',
-        'query_string' => $_SERVER['QUERY_STRING'] ?? 'none',
-        'http_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
-    ]
-];
+    // Log information about the request for debugging
+    $debugInfo = [
+        'method' => $_SERVER['REQUEST_METHOD'],
+        'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
+        'has_post' => !empty($_POST),
+        'has_raw_input' => !empty(file_get_contents('php://input')),
+        'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
+        'php_version' => PHP_VERSION,
+        'anti_bot_enabled' => true,
+        'current_time_ms' => round(microtime(true) * 1000),
+        'server_vars' => [
+            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'unknown',
+            'query_string' => $_SERVER['QUERY_STRING'] ?? 'none',
+            'http_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+        ]
+    ];
 
 // Handle GET request (for testing only)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -181,8 +210,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Validate time delay first (anti-bot protection)
+    $timeDelayErrors = validateTimeDelay($sanitizedData);
+    
     // Validate form data
-    $errors = validateContactForm($sanitizedData);
+    $formErrors = validateContactForm($sanitizedData);
+    
+    // Combine all errors
+    $errors = array_merge($timeDelayErrors, $formErrors);
 
     if (!empty($errors)) {
         // Format the error message to be more user-friendly
