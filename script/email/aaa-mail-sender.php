@@ -5,25 +5,69 @@
  * Uses PHPMailer to send emails through the AAA City SMTP server
  */
 
-// Define constants for email configuration
-define('AAA_SMTP_HOST', 'mail.aaa-city.com');
-define('AAA_SMTP_PORT', 587);
-define('AAA_SMTP_USERNAME', 'smtpmailer@aaa-city.com');
-define('AAA_SMTP_PASSWORD', 'SMTPMa1l3r');
-define('AAA_SMTP_ENCRYPTION', 'tls'); // STARTTLS
-
-// Check if PHPMailer is already included
-if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
-    // If PHPMailer is not available, include the PHPMailer class via composer autoload
-    // or directly include the PHPMailer files
-    if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
-        require_once __DIR__ . '/../../vendor/autoload.php';
-    } else {
-        // If no composer autoload, include PHPMailer classes directly
+// Check if autoloader was already loaded (it should be by aaa-contact-form-handler.php)
+// If not, try to load it (for standalone usage)
+if (!class_exists('Dotenv\Dotenv')) {
+    $autoloaderPaths = [
+        __DIR__ . '/../../vendor/autoload.php',
+        __DIR__ . '/../../../vendor/autoload.php', 
+        __DIR__ . '/../../../../vendor/autoload.php',
+    ];
+    
+    $autoloaderLoaded = false;
+    foreach ($autoloaderPaths as $autoloaderPath) {
+        if (file_exists($autoloaderPath)) {
+            require_once $autoloaderPath;
+            $autoloaderLoaded = true;
+            break;
+        }
+    }
+    
+    // If no Composer autoloader found, load PHPMailer classes directly
+    if (!$autoloaderLoaded) {
         require_once __DIR__ . '/PHPMailer/Exception.php';
         require_once __DIR__ . '/PHPMailer/PHPMailer.php';
         require_once __DIR__ . '/PHPMailer/SMTP.php';
     }
+}
+
+// Load environment variables if Dotenv class is available
+if (class_exists('Dotenv\Dotenv')) {
+    
+    // Try different paths for .env file
+    $envPaths = [
+        __DIR__ . '/../../',        // Standard location
+        __DIR__ . '/../../../',     // Alternative location  
+        __DIR__ . '/../../../../',  // Root level
+    ];
+    
+    foreach ($envPaths as $envPath) {
+        if (file_exists($envPath . '.env')) {
+            try {
+                $dotenv = \Dotenv\Dotenv::createImmutable($envPath);
+                $dotenv->load();
+                $dotenv->required(['SMTP_HOST', 'SMTP_PORT', 'SMTP_USERNAME', 'SMTP_PASSWORD', 'SMTP_ENCRYPTION']);
+                break;
+            } catch (Exception $e) {
+                // Continue to next path if this one fails
+                continue;
+            }
+        }
+    }
+    
+    // Define constants from environment variables
+    define('AAA_SMTP_HOST', $_ENV['SMTP_HOST']);
+    define('AAA_SMTP_PORT', (int)$_ENV['SMTP_PORT']);
+    define('AAA_SMTP_USERNAME', $_ENV['SMTP_USERNAME']);
+    define('AAA_SMTP_PASSWORD', $_ENV['SMTP_PASSWORD']);
+    define('AAA_SMTP_ENCRYPTION', $_ENV['SMTP_ENCRYPTION']);
+} else {
+    // Fallback: Load from server environment variables or use defaults
+    define('AAA_SMTP_HOST', $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST') ?? 'mail.aaa-city.com');
+    define('AAA_SMTP_PORT', (int)($_ENV['SMTP_PORT'] ?? getenv('SMTP_PORT') ?? 587));
+    define('AAA_SMTP_USERNAME', $_ENV['SMTP_USERNAME'] ?? getenv('SMTP_USERNAME') ?? 'smtpmailer@aaa-city.com');
+    define('AAA_SMTP_PASSWORD', $_ENV['SMTP_PASSWORD'] ?? getenv('SMTP_PASSWORD') ?? 'SMTPMa1l3r');
+    define('AAA_SMTP_ENCRYPTION', $_ENV['SMTP_ENCRYPTION'] ?? getenv('SMTP_ENCRYPTION') ?? 'tls');
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -37,13 +81,13 @@ use PHPMailer\PHPMailer\SMTP;
  * @return string HTML email content
  */
 function createContactEmailHtml($formData) {
-    // Get form data
+    // Get form data using current field names
     $name = isset($formData['user-name']) ? htmlspecialchars($formData['user-name']) : 'Not provided';
     $email = isset($formData['user-email']) ? htmlspecialchars($formData['user-email']) : 'Not provided';
     $company = isset($formData['msg-subject']) ? htmlspecialchars($formData['msg-subject']) : 'Not provided';
     $message = isset($formData['msg-text']) ? nl2br(htmlspecialchars($formData['msg-text'])) : 'Not provided';
     
-    // Create HTML email content
+    // Create HTML email content with AAA City branding
     $html = '
     <!DOCTYPE html>
     <html lang="en">
@@ -57,7 +101,8 @@ function createContactEmailHtml($formData) {
             .header { background-color: #0066cc; color: white; padding: 10px 20px; text-align: center; }
             .content { padding: 20px; background-color: #f9f9f9; }
             .field { margin-bottom: 15px; }
-            .label { font-weight: bold; }
+            .label { font-weight: bold; color: #333; }
+            .value { color: #333; margin: 0; }
             .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #666; }
         </style>
     </head>
@@ -69,19 +114,21 @@ function createContactEmailHtml($formData) {
             <div class="content">
                 <div class="field">
                     <p class="label">Name:</p>
-                    <p>' . $name . '</p>
+                    <p class="value">' . $name . '</p>
                 </div>
                 <div class="field">
                     <p class="label">Email:</p>
-                    <p>' . $email . '</p>
+                    <p class="value">' . $email . '</p>
                 </div>
                 <div class="field">
                     <p class="label">Company:</p>
-                    <p>' . $company . '</p>
+                    <p class="value">' . $company . '</p>
                 </div>
+    
+    $html .= '
                 <div class="field">
                     <p class="label">Message:</p>
-                    <p>' . $message . '</p>
+                    <p class="value">' . $message . '</p>
                 </div>
             </div>
             <div class="footer">
@@ -186,4 +233,5 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == basename(__FILE__)) {
             'message' => 'This endpoint only accepts POST requests'
         ]);
     }
-} 
+}
+?>

@@ -6,6 +6,14 @@
  * and sends emails using the AAA City mail server.
  */
 
+// Load Composer autoloader - PHPMailer and Dotenv are now available
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+// Import PHPMailer classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
 // Include the AAA mail sender
 require_once __DIR__ . '/aaa-mail-sender.php';
 
@@ -27,6 +35,34 @@ header("Access-Control-Max-Age: 86400"); // 24 hours
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
+}
+
+// Function to check for spam patterns
+function detectSpam($data) {
+    $spamKeywords = ['viagra', 'casino', 'lottery', 'winner', 'congratulations', 'click here', 'free money', 'make money fast'];
+    $suspiciousPatterns = [
+        '/\b(?:https?:\/\/[^\s]+){3,}/', // Multiple URLs
+        '/\b[A-Z]{10,}/', // Excessive caps
+        '/(.)\1{10,}/', // Repeated characters
+    ];
+    
+    $content = strtolower(implode(' ', array_values($data)));
+    
+    // Check for spam keywords
+    foreach ($spamKeywords as $keyword) {
+        if (strpos($content, $keyword) !== false) {
+            return true;
+        }
+    }
+    
+    // Check for suspicious patterns
+    foreach ($suspiciousPatterns as $pattern) {
+        if (preg_match($pattern, $content)) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 // Function to validate time delay (anti-bot protection)
@@ -59,12 +95,20 @@ function validateTimeDelay($data) {
 // Function to validate form data
 function validateContactForm($data) {
     $errors = [];
+    
+    // Check for spam
+    if (detectSpam($data)) {
+        $errors[] = 'Message appears to contain spam content';
+        return $errors;
+    }
 
-    // Required fields
+    // Required fields - using current form field names
     $requiredFields = ['user-name', 'user-email', 'msg-subject', 'msg-text'];
     foreach ($requiredFields as $field) {
         if (!isset($data[$field]) || trim($data[$field]) === '') {
-            $errors[] = ucfirst(str_replace('-', ' ', $field)) . ' is required';
+            $fieldDisplayName = str_replace(['user-', 'msg-'], ['', ''], $field);
+            $fieldDisplayName = str_replace(['-'], [' '], $fieldDisplayName);
+            $errors[] = ucfirst($fieldDisplayName) . ' is required';
         }
     }
 
@@ -75,8 +119,8 @@ function validateContactForm($data) {
         // Check length
         if (strlen($name) < 2) {
             $errors[] = 'Name must be at least 2 characters';
-        } elseif (strlen($name) > 50) {
-            $errors[] = 'Name must be no more than 50 characters';
+        } elseif (strlen($name) > 60) {
+            $errors[] = 'Name must be no more than 60 characters';
         }
 
         // Check for valid characters (letters, spaces, hyphens, apostrophes)
@@ -104,7 +148,7 @@ function validateContactForm($data) {
         }
     }
 
-    // Subject validation
+    // Company validation (msg-subject field)
     if (isset($data['msg-subject']) && !empty($data['msg-subject'])) {
         $subject = trim($data['msg-subject']);
 
@@ -134,23 +178,23 @@ function validateContactForm($data) {
 // Get the request data based on content type
 $requestData = [];
 
-    // Log information about the request for debugging
-    $debugInfo = [
-        'method' => $_SERVER['REQUEST_METHOD'],
-        'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
-        'has_post' => !empty($_POST),
-        'has_raw_input' => !empty(file_get_contents('php://input')),
-        'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
-        'php_version' => PHP_VERSION,
-        'anti_bot_enabled' => true,
-        'current_time_ms' => round(microtime(true) * 1000),
-        'server_vars' => [
-            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
-            'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'unknown',
-            'query_string' => $_SERVER['QUERY_STRING'] ?? 'none',
-            'http_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
-        ]
-    ];
+// Log information about the request for debugging
+$debugInfo = [
+    'method' => $_SERVER['REQUEST_METHOD'],
+    'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
+    'has_post' => !empty($_POST),
+    'has_raw_input' => !empty(file_get_contents('php://input')),
+    'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
+    'php_version' => PHP_VERSION,
+    'anti_bot_enabled' => true,
+    'current_time_ms' => round(microtime(true) * 1000),
+    'server_vars' => [
+        'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+        'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'unknown',
+        'query_string' => $_SERVER['QUERY_STRING'] ?? 'none',
+        'http_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+    ]
+];
 
 // Handle GET request (for testing only)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -236,7 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Create HTML email content
     $emailHtml = createContactEmailHtml($sanitizedData);
 
-    // Set the recipient email
+    // Set the recipient email - UPDATED for AAA City
     $recipientEmail = 'info@aaa-city.com'; // Send all form submissions to this email
     
     // Set the subject format
@@ -280,4 +324,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'message' => 'Invalid request method. This endpoint only accepts POST requests.',
         'debug' => $debugInfo
     ]);
-} 
+}
+?>
