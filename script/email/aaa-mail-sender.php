@@ -124,8 +124,6 @@ function createContactEmailHtml($formData) {
                     <p class="label">Company:</p>
                     <p class="value">' . $company . '</p>
                 </div>
-    
-    $html .= '
                 <div class="field">
                     <p class="label">Message:</p>
                     <p class="value">' . $message . '</p>
