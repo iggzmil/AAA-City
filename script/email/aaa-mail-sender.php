@@ -36,7 +36,7 @@ if (class_exists('Dotenv\Dotenv')) {
     
     // Try different paths for .env file
     $envPaths = [
-        __DIR__ . '/../../',        // Standard location
+        __DIR__ . '/../../',        // Standard location (/var/www/AAA-City/)
         __DIR__ . '/../../../',     // Alternative location  
         __DIR__ . '/../../../../',  // Root level
     ];
@@ -66,7 +66,7 @@ if (class_exists('Dotenv\Dotenv')) {
     define('AAA_SMTP_HOST', $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST') ?? 'mail.aaa-city.com');
     define('AAA_SMTP_PORT', (int)($_ENV['SMTP_PORT'] ?? getenv('SMTP_PORT') ?? 587));
     define('AAA_SMTP_USERNAME', $_ENV['SMTP_USERNAME'] ?? getenv('SMTP_USERNAME') ?? 'smtpmailer@aaa-city.com');
-    define('AAA_SMTP_PASSWORD', $_ENV['SMTP_PASSWORD'] ?? getenv('SMTP_PASSWORD') ?? 'SMTPMa1l3r');
+    define('AAA_SMTP_PASSWORD', $_ENV['SMTP_PASSWORD'] ?? getenv('SMTP_PASSWORD') ?? 'Password4SMTPMailer');
     define('AAA_SMTP_ENCRYPTION', $_ENV['SMTP_ENCRYPTION'] ?? getenv('SMTP_ENCRYPTION') ?? 'tls');
 }
 
