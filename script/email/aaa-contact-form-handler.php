@@ -17,16 +17,51 @@ use PHPMailer\PHPMailer\SMTP;
 // Include the AAA mail sender
 require_once __DIR__ . '/aaa-mail-sender.php';
 
-// Enable error reporting for debugging (comment this out in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Production-safe error handling
+$isProduction = ($_SERVER['SERVER_NAME'] === 'aaa-city.com') || 
+                ($_SERVER['SERVER_NAME'] === 'www.aaa-city.com');
+
+if ($isProduction) {
+    // Production: Hide errors from users, log them instead
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    ini_set('log_errors', 1);
+    ini_set('error_log', __DIR__ . '/../../logs/php_errors.log');
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+} else {
+    // Development: Show errors for debugging
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 
 // Set content type for responses
 header('Content-Type: application/json');
 
-// Allow CORS - use specific domain in production
-header("Access-Control-Allow-Origin: *");
+// Secure CORS - only allow specific domains
+$allowedOrigins = [
+    'https://aaa-city.com',
+    'https://www.aaa-city.com'
+];
+
+// Add localhost for development (remove for production)
+if (in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1', 'dev.aaa-city.com'])) {
+    $allowedOrigins[] = 'http://localhost:3000';
+    $allowedOrigins[] = 'http://localhost:8080';
+    $allowedOrigins[] = 'http://127.0.0.1:3000';
+}
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    // Log unauthorized attempts for security monitoring
+    if (!empty($origin)) {
+        error_log("SECURITY: Unauthorized CORS request from: $origin");
+    }
+    // Still set a default for same-origin requests
+    header("Access-Control-Allow-Origin: https://aaa-city.com");
+}
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
 header("Access-Control-Max-Age: 86400"); // 24 hours
