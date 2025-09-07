@@ -317,4 +317,139 @@
 
 .tde-chat-container.processing .tde-chat-input {
   background-color: #f9f9f9;
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+
+/* Tablet and small desktop */
+@media (max-width: 768px) {
+  .tde-chat-container {
+    bottom: 20px;
+    right: 15px;
+  }
+  
+  /* Smaller expanded chat for tablets */
+  .tde-chat-container:not(.minimized) {
+    width: 280px;
+    height: 420px;
+  }
+  
+  /* Smaller bubble */
+  .tde-chat-bubble {
+    max-width: 220px;
+    min-width: 180px;
+    font-size: 13px;
+    padding: 8px 12px;
+    right: 5px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .tde-chat-container {
+    bottom: 15px;
+    right: 10px;
+  }
+  
+  /* Mobile-optimized expanded chat */
+  .tde-chat-container:not(.minimized) {
+    width: calc(100vw - 20px);
+    max-width: 350px;
+    height: 450px;
+    right: 10px;
+    bottom: 15px;
+  }
+  
+  /* Mobile chat bubble - much smaller */
+  .tde-chat-bubble {
+    max-width: 200px;
+    min-width: 160px;
+    font-size: 12px;
+    padding: 8px 10px;
+    right: 5px;
+    white-space: normal; /* Allow text wrapping on mobile */
+    line-height: 1.3;
+  }
+  
+  /* Larger touch targets for mobile */
+  .tde-chat-minimized {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 28px;
+  }
+  
+  .tde-chat-minimized img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  /* Mobile chat input area */
+  .tde-chat-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px 15px;
+    min-height: 44px; /* Apple recommended touch target */
+  }
+  
+  .tde-chat-send {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+  }
+  
+  /* Mobile chat messages */
+  .tde-chat-message {
+    font-size: 14px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  
+  /* Mobile close button */
+  .tde-chat-header .tde-chat-close {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+    font-size: 18px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 320px) {
+  .tde-chat-container:not(.minimized) {
+    width: calc(100vw - 10px);
+    height: 400px;
+    right: 5px;
+    bottom: 10px;
+  }
+  
+  .tde-chat-bubble {
+    max-width: 150px;
+    min-width: 120px;
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-height: 500px) and (max-width: 768px) {
+  .tde-chat-container:not(.minimized) {
+    height: calc(100vh - 30px);
+    max-height: 350px;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* This targets touch devices */
+  .tde-chat-bubble {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  /* Ensure all clickable elements meet 44px minimum */
+  .tde-chat-minimized,
+  .tde-chat-send,
+  .tde-chat-close {
+    min-width: 44px;
+    min-height: 44px;
+  }
 } 

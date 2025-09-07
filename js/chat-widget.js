@@ -601,7 +601,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         data = await response.json();
       } catch (fetchError) {
-        console.error('Fetch error:', fetchError);
+        // Use unified error handler for chat API errors
+        ErrorHandler.api(fetchError, {
+          source: 'chat_widget_send_message',
+          context: { 
+            payload,
+            endpoint: webhookUrl 
+          },
+          severity: ErrorHandler.SEVERITY.HIGH,
+          showToUser: false
+        });
+        
         throw new Error('Failed to connect to chat service. Please try again later.');
       }
 

@@ -1,16 +1,17 @@
-//GLOBAL VARIBALES
-
-//selector constants
-var root = $("html, body");
-const main_window = $(window),
-  pageBody = $("body"),
-  bdyOnePage = $("body.landing-page-demo "),
-  toTopBtn = $(".back-to-top"),
-  textInput = $("form.main-form .text-input"),
-  tabLink = $(".ma-tabs .tabs-links .tab-link");
+// AAA City Main JavaScript - Wrapped in IIFE to prevent global pollution
+(function() {
+  'use strict';
+  
+  // Selector constants - now private to this scope
+  const root = $("html, body");
+  const main_window = $(window);
+  const pageBody = $("body");
+  const bdyOnePage = $("body.landing-page-demo ");
+  const toTopBtn = $(".back-to-top");
+  const textInput = $("form.main-form .text-input");
+  const tabLink = $(".ma-tabs .tabs-links .tab-link");
 
 $(function () {
-  ("use strict");
 
 
 
@@ -53,7 +54,7 @@ $(function () {
   function loadAnimationScripts() {
     // Helper function to load a script
     function loadScript(src, callback) {
-      var script = document.createElement('script');
+      const script = document.createElement('script');
       script.src = src;
       script.onload = callback || function() {};
       document.body.appendChild(script);
@@ -78,7 +79,6 @@ $(function () {
             density: 6,              // Point density (increased from 5 for smaller, more numerous points)
             depth: 250               // Wave depth (decreased from 300)
           });
-          console.log('Wave effect initialized successfully');
         }
       });
     }, 100);
@@ -518,7 +518,13 @@ $(function () {
                   return JSON.parse(text);
               } catch (e) {
                   // If not valid JSON, return the text
-                  console.error('Server returned non-JSON response:', text);
+                  // Log parsing error using unified error handler
+                  ErrorHandler.api('Server returned invalid JSON response', {
+                      source: 'contact_form_submit',
+                      context: { response: text.substring(0, 200) },
+                      showToUser: false
+                  });
+                  
                   return {
                       success: false,
                       message: 'Server returned an invalid response format',
@@ -540,9 +546,15 @@ $(function () {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalButtonText;
 
-          // Show error message
-          alert('Error: ' + error.message);
-          console.error('Form submission error:', error);
+          // Use unified error handler for network/fetch errors
+          ErrorHandler.network(error, {
+              source: 'contact_form_submit',
+              context: { 
+                  formAction: contactForm.action,
+                  formData: Object.fromEntries(formData)
+              },
+              severity: ErrorHandler.SEVERITY.HIGH
+          });
       });
     });
 
@@ -587,3 +599,5 @@ $(function () {
     }
   }
 });
+
+})(); // End of IIFE - closes the module scope

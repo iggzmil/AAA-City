@@ -428,7 +428,12 @@ function WaveEffect(selector, options = {}) {
     : selector;
 
   if (!container) {
-    console.error('Wave container not found.');
+    // Use unified error handler for missing wave container
+    ErrorHandler.ui('Wave container element not found', {
+        source: 'wave_initialization',
+        severity: ErrorHandler.SEVERITY.LOW,
+        context: { selector: '.wave-container' }
+    });
     return null;
   }
 
